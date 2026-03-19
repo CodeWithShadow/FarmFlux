@@ -55,13 +55,16 @@ export default defineConfig({
     })
   ],
   optimizeDeps: {
-    include: ['@tensorflow/tfjs']
+    exclude: ['@tensorflow/tfjs']
   },
   build: {
     rollupOptions: {
+      external: ['@tensorflow/tfjs'],
       output: {
+        globals: {
+          '@tensorflow/tfjs': 'tf'
+        },
         manualChunks: {
-          tensorflow: ['@tensorflow/tfjs'],
           vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion']
         }
       }

@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+const tf = window.tf;
 import { DISEASE_CLASSES } from '../utils/diseaseClasses';
 
 let model = null;

@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+const tf = window.tf;
 import { SOIL_CLASSES } from '../utils/soilClasses';
 
 let model = null;
