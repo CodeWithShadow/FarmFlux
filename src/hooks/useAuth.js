@@ -15,6 +15,9 @@ export function useAuth() {
                 ensureUserInDB(s.user).catch(console.error);
             }
             setLoading(false);
+        }).catch((err) => {
+            console.error('Session error:', err);
+            setLoading(false);
         });
 
         // Listen for auth changes
