@@ -37,7 +37,7 @@ export default function DiseaseDetection() {
         try {
             // Create off-screen image for processing
             const img = new Image();
-            img.crossOrigin = 'anonymous';
+            // Data URLs don't need crossOrigin, it can sometimes cause SecurityErrors on Safari/iOS
             await new Promise((resolve, reject) => {
                 img.onload = resolve;
                 img.onerror = reject;
@@ -90,6 +90,7 @@ export default function DiseaseDetection() {
             }
         } catch (err) {
             console.error('Analysis error:', err);
+            alert(`Analysis Error: ${err.message}`);
             setDiseaseLoading(false);
         }
     };

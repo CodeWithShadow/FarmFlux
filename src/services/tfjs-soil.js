@@ -22,10 +22,10 @@ export async function loadSoilModel(onProgress) {
 
         if (onProgress) onProgress(10);
 
+        // Load MobileNetV2 as base model from stable Google API Storage
         model = await tf.loadGraphModel(
-            'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/classification/3/default/1',
+            'https://storage.googleapis.com/tfjs-models/savedmodel/mobilenet_v2_1.0_224/model.json',
             {
-                fromTFHub: true,
                 onProgress: (fraction) => {
                     if (onProgress) onProgress(Math.round(fraction * 80) + 10);
                 }
