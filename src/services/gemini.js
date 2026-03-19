@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+const genAI = new GoogleGenerativeAI(apiKey);
+const model = apiKey ? genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }) : null;
 
 const OFFLINE_CACHE_KEY = 'farmflux_gemini_cache';
 
@@ -31,6 +32,7 @@ export async function streamGeminiResponse(prompt, onChunk) {
     }
 
     try {
+        if (!model) throw new Error('Gemini API key not configured.');
         const result = await model.generateContentStream(prompt);
         let fullText = '';
         for await (const chunk of result.stream) {
@@ -50,6 +52,7 @@ export async function streamGeminiResponse(prompt, onChunk) {
 
 export async function getGeminiJSON(prompt) {
     const jsonPrompt = `${prompt}\n\nRespond ONLY with valid JSON. No markdown, no code blocks, just raw JSON.`;
+    if (!model) throw new Error('Gemini API key not configured.');
     const result = await model.generateContent(jsonPrompt);
     const text = result.response.text().trim();
     const cleaned = text.replace(/^```json?\n?/i, '').replace(/\n?```$/i, '').trim();
