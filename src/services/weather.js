@@ -27,12 +27,12 @@ export async function getUserLocation() {
             async (pos) => {
                 try {
                     // Free reverse geocoding API to get the city name from coordinates
-                    const { data } = await axios.get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=en`, { timeout: 5000 });
-                    resolve(data.city || data.locality || 'Delhi');
+                    const { data } = await axios.get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=en`, { timeout: 8000 });
+                    resolve(data.city || data.locality || data.principalSubdivision || 'Delhi');
                 } catch { resolve('Delhi'); }
             },
             () => resolve('Delhi'),
-            { timeout: 5000 }
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 }
         );
     });
 }
