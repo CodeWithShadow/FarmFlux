@@ -7,8 +7,14 @@ export function useAuth() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Failsafe: Force resolve UI if Supabase hangs invisibly
+        const failsafeId = setTimeout(() => {
+            setLoading(false);
+        }, 3000);
+
         // Get initial session
         supabase.auth.getSession().then(({ data: { session: s } }) => {
+            clearTimeout(failsafeId);
             setSession(s);
             if (s?.user) {
                 setUser(s.user);
@@ -34,7 +40,10 @@ export function useAuth() {
             }
         );
 
-        return () => subscription.unsubscribe();
+        return () => {
+            clearTimeout(failsafeId);
+            subscription.unsubscribe();
+        };
     }, []);
 
     return { user, session, loading };
