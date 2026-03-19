@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npx vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -23,9 +23,6 @@
     "react-dropzone": "^14.2.3",
     "date-fns": "^2.30.0",
     "lucide-react": "^0.294.0"
-  },
-  "engines": {
-    "node": "24.x"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
