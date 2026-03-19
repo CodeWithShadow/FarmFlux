@@ -166,3 +166,58 @@ Provide:
 Be detailed and practical for urban settings.`;
     return streamGeminiResponse(prompt, onChunk);
 }
+
+/* ─── Multimodal Image Analysis ─── */
+
+export async function analyzeDiseaseImage(imageDataUrl) {
+    const [header, base64] = imageDataUrl.split(',');
+    const mimeType = header.split(':')[1].split(';')[0];
+    const imagePart = { inlineData: { data: base64, mimeType } };
+
+    const prompt = `You are a world-class expert agronomist and plant pathologist. 
+Analyze this image of a plant leaf and identify any diseases present.
+If it is a healthy leaf, identify the crop (e.g. "Apple Healthy").
+If the image is clearly not a plant or leaf, return "Unknown Object" for className.
+
+Return ONLY valid JSON in exactly this structure:
+{
+  "topPrediction": { "className": "CropName DiseaseName", "confidence": 0.95 },
+  "allPredictions": [
+    { "className": "CropName DiseaseName", "confidence": 0.95 },
+    { "className": "Alternative Disease", "confidence": 0.05 }
+  ],
+  "isHealthy": false,
+  "treatment": "A detailed 3-step treatment plan if diseased, otherwise a short maintenance tip."
+}`;
+
+    if (!model) throw new Error('Gemini API key not configured.');
+    const result = await model.generateContent([prompt, imagePart]);
+    const text = result.response.text().trim();
+    const cleaned = text.replace(/^```json?\n?/i, '').replace(/\n?```$/i, '').trim();
+    return JSON.parse(cleaned);
+}
+
+export async function analyzeSoilImage(imageDataUrl) {
+    const [header, base64] = imageDataUrl.split(',');
+    const mimeType = header.split(':')[1].split(';')[0];
+    const imagePart = { inlineData: { data: base64, mimeType } };
+
+    const prompt = `You are an expert soil scientist. 
+Analyze this image of soil and estimate its physical properties, type, and composition based on visual texture, color, and structure.
+
+Return ONLY valid JSON in exactly this structure:
+{
+  "soilType": { "name": "Loamy Soil", "description": "A short 1-sentence description." },
+  "confidence": 0.85,
+  "composition": { "sand": 40, "silt": 40, "clay": 20, "organic": 5 },
+  "phEstimate": "6.0-7.0",
+  "nutrients": { "nitrogen": "Medium", "phosphorus": "High", "potassium": "Low", "organic": "Medium" },
+  "aiText": "Detailed recommendation on how to improve this soil and what crops might grow best in it."
+}`;
+
+    if (!model) throw new Error('Gemini API key not configured.');
+    const result = await model.generateContent([prompt, imagePart]);
+    const text = result.response.text().trim();
+    const cleaned = text.replace(/^```json?\n?/i, '').replace(/\n?```$/i, '').trim();
+    return JSON.parse(cleaned);
+}

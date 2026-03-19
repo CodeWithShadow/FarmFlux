@@ -5,8 +5,7 @@ import ImageUploader from '../components/ui/ImageUploader';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import DiseaseResult from '../components/disease/DiseaseResult';
 import useStore from '../store/useStore';
-import { detectDisease, generateGradCAM } from '../services/tfjs-disease';
-import { getTreatmentRecommendation } from '../services/gemini';
+import { analyzeDiseaseImage } from '../services/gemini';
 import { saveDiseaseAnalysis, uploadCropImage } from '../services/supabase';
 import { getCropFromDisease, isHealthy } from '../utils/diseaseClasses';
 import { useOffline } from '../hooks/useOffline';
@@ -35,25 +34,10 @@ export default function DiseaseDetection() {
         setTreatmentText('');
 
         try {
-            // Create off-screen image for processing
-            const img = new Image();
-            // Data URLs don't need crossOrigin, it can sometimes cause SecurityErrors on Safari/iOS
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = imageSrc;
-            });
-            imgRef.current = img;
-
-            // Run TF.js inference
-            const result = await detectDisease(img);
+            // Run Gemini Vision API inference directly
+            const result = await analyzeDiseaseImage(imageSrc);
             setDiseaseResult(result);
-
-            // Generate Grad-CAM heatmap
-            if (!isHealthy(result.topPrediction.className)) {
-                const heatmap = await generateGradCAM(img);
-                setHeatmapSrc(heatmap);
-            }
+            setTreatmentText(result.treatment);
 
             // Save to Supabase
             if (user) {
@@ -77,16 +61,6 @@ export default function DiseaseDetection() {
                 } else {
                     saveForSync('disease_analysis', analysisData);
                 }
-            }
-
-            // Get AI treatment recommendation
-            if (!result.isHealthy && isOnline) {
-                const crop = getCropFromDisease(result.topPrediction.className);
-                try {
-                    await getTreatmentRecommendation(result.topPrediction.className, crop, (text, done) => {
-                        setTreatmentText(text);
-                    });
-                } catch (err) { console.error('Gemini error:', err); }
             }
         } catch (err) {
             console.error('Analysis error:', err);

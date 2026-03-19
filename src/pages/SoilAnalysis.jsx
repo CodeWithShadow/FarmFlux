@@ -6,8 +6,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ConfidenceBar from '../components/ui/ConfidenceBar';
 import TypewriterText from '../components/ui/TypewriterText';
 import useStore from '../store/useStore';
-import { classifySoil } from '../services/tfjs-soil';
-import { getCropRecommendationsForSoil } from '../services/gemini';
+import { analyzeSoilImage } from '../services/gemini';
 import { saveSoilAnalysis, uploadCropImage } from '../services/supabase';
 import { SOIL_CROP_MAP } from '../utils/cropRecommendations';
 
@@ -32,15 +31,9 @@ export default function SoilAnalysis() {
         setAiText('');
 
         try {
-            const img = new Image();
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = imageSrc;
-            });
-
-            const res = await classifySoil(img);
+            const res = await analyzeSoilImage(imageSrc);
             setResult(res);
+            setAiText(res.aiText);
             setLoading(false);
 
             // Save to Supabase
@@ -60,15 +53,6 @@ export default function SoilAnalysis() {
                         data.image_url = imageUrl;
                     }
                     await saveSoilAnalysis(data);
-                } catch (err) { console.error(err); }
-            }
-
-            // Get AI recommendations
-            if (navigator.onLine) {
-                try {
-                    await getCropRecommendationsForSoil(res.soilType.name, res.nutrients, (text) => {
-                        setAiText(text);
-                    });
                 } catch (err) { console.error(err); }
             }
         } catch (err) {
