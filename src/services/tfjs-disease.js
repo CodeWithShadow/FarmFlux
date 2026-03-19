@@ -88,7 +88,7 @@ export async function detectDisease(imageElement) {
     const normalizedProbs = expProbs.map(p => p / expSum);
 
     // Sort and get top predictions
-    const indexed = normalizedProbs.map((prob, idx) => ({ prob, idx }));
+    const indexed = Array.from(normalizedProbs).map((prob, idx) => ({ prob, idx }));
     indexed.sort((a, b) => b.prob - a.prob);
 
     const topPredictions = indexed.slice(0, 5).map(item => ({

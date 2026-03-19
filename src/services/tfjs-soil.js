@@ -76,7 +76,7 @@ export async function classifySoil(imageElement) {
     const expSum = expProbs.reduce((a, b) => a + b, 0);
     const normalizedProbs = expProbs.map(p => p / expSum);
 
-    const indexed = normalizedProbs.map((prob, idx) => ({ prob, idx }));
+    const indexed = Array.from(normalizedProbs).map((prob, idx) => ({ prob, idx }));
     indexed.sort((a, b) => b.prob - a.prob);
 
     const topSoilType = SOIL_CLASSES[indexed[0].idx];
