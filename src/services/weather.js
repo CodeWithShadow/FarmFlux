@@ -20,85 +20,112 @@ function setCache(key, data) {
     } catch { /* storage full */ }
 }
 
-export async function getWeather(location = 'auto') {
-    const cacheKey = `weather_${location}`;
-    const cached = getCached(cacheKey);
-    if (cached) return cached;
-
-    try {
-        const loc = location === 'auto' ? '' : location;
-        const { data } = await axios.get(`https://wttr.in/${loc}?format=j1`, {
-            timeout: 10000,
-        });
-
-        const current = data.current_condition?.[0] || {};
-        const forecast = data.weather || [];
-
-        const result = {
-            current: {
-                temp: parseInt(current.temp_C) || 25,
-                feelsLike: parseInt(current.FeelsLikeC) || 25,
-                humidity: parseInt(current.humidity) || 60,
-                windSpeed: parseInt(current.windspeedKmph) || 10,
-                description: current.weatherDesc?.[0]?.value || 'Clear',
-                icon: mapWeatherIcon(current.weatherCode),
-                precipitation: parseFloat(current.precipMM) || 0,
-                uvIndex: parseInt(current.uvIndex) || 5,
-                visibility: parseInt(current.visibility) || 10,
-                pressure: parseInt(current.pressure) || 1013,
-            },
-            forecast: forecast.slice(0, 7).map(day => ({
-                date: day.date,
-                maxTemp: parseInt(day.maxtempC) || 30,
-                minTemp: parseInt(day.mintempC) || 20,
-                description: day.hourly?.[4]?.weatherDesc?.[0]?.value || 'Clear',
-                icon: mapWeatherIcon(day.hourly?.[4]?.weatherCode),
-                precipitation: parseFloat(day.hourly?.[4]?.precipMM) || 0,
-                humidity: parseInt(day.hourly?.[4]?.humidity) || 60,
-            })),
-            location: data.nearest_area?.[0]?.areaName?.[0]?.value || location,
-        };
-
-        setCache(cacheKey, result);
-        return result;
-    } catch (err) {
-        const cached2 = getCached(cacheKey);
-        if (cached2) return cached2;
-        return {
-            current: { temp: 28, feelsLike: 30, humidity: 65, windSpeed: 12, description: 'Partly Cloudy', icon: '⛅', precipitation: 0, uvIndex: 6, visibility: 10, pressure: 1013 },
-            forecast: Array.from({ length: 7 }, (_, i) => ({
-                date: new Date(Date.now() + i * 86400000).toISOString().split('T')[0],
-                maxTemp: 32, minTemp: 22, description: 'Clear', icon: '☀️', precipitation: 0, humidity: 60,
-            })),
-            location: location === 'auto' ? 'Your Location' : location,
-        };
-    }
-}
-
-function mapWeatherIcon(code) {
-    const c = parseInt(code) || 0;
-    if (c === 113) return '☀️';
-    if (c === 116) return '⛅';
-    if (c === 119 || c === 122) return '☁️';
-    if ([176, 263, 266, 293, 296, 299, 302, 305, 308, 311, 314, 317, 353, 356, 359].includes(c)) return '🌧️';
-    if ([179, 182, 185, 227, 230, 320, 323, 326, 329, 332, 335, 338, 350, 362, 365, 368, 371, 374, 377, 392, 395].includes(c)) return '❄️';
-    if ([200, 386, 389].includes(c)) return '⛈️';
-    if (c === 143 || c === 248 || c === 260) return '🌫️';
-    return '🌤️';
-}
-
 export async function getUserLocation() {
     return new Promise((resolve) => {
         if (!navigator.geolocation) { resolve('Delhi'); return; }
         navigator.geolocation.getCurrentPosition(
             async (pos) => {
                 try {
-                    const { data } = await axios.get(`https://wttr.in/${pos.coords.latitude},${pos.coords.longitude}?format=j1`, { timeout: 5000 });
-                    resolve(data.nearest_area?.[0]?.areaName?.[0]?.value || 'Delhi');
+                    // Free reverse geocoding API to get the city name from coordinates
+                    const { data } = await axios.get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=en`, { timeout: 5000 });
+                    resolve(data.city || data.locality || 'Delhi');
                 } catch { resolve('Delhi'); }
             },
             () => resolve('Delhi'),
             { timeout: 5000 }
         );
     });
+}
+
+export async function getWeather(location = 'auto') {
+    const cacheKey = `weather_${location}`;
+    const cached = getCached(cacheKey);
+    if (cached) return cached;
+
+    try {
+        let lat = 28.6139; // Delhi defaults
+        let lon = 77.2090;
+        let locName = 'Delhi';
+
+        if (location !== 'auto') {
+            const geoRes = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
+            if (geoRes.data.results?.[0]) {
+                lat = geoRes.data.results[0].latitude;
+                lon = geoRes.data.results[0].longitude;
+                locName = geoRes.data.results[0].name;
+            } else {
+                locName = location;
+            }
+        }
+
+        // Open-Meteo is a reliable, free API with proper CORS support
+        const { data } = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,surface_pressure&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max&timezone=auto`);
+
+        const current = data.current;
+        const daily = data.daily;
+
+        const result = {
+            current: {
+                temp: Math.round(current.temperature_2m),
+                feelsLike: Math.round(current.apparent_temperature),
+                humidity: Math.round(current.relative_humidity_2m),
+                windSpeed: Math.round(current.wind_speed_10m),
+                description: mapWMODesc(current.weather_code),
+                icon: mapWMOIcon(current.weather_code),
+                precipitation: current.precipitation,
+                uvIndex: daily.uv_index_max?.[0] ? Math.round(daily.uv_index_max[0]) : 5,
+                visibility: 10, // Not provided directly, default to 10
+                pressure: Math.round(current.surface_pressure),
+            },
+            forecast: daily.time.slice(0, 7).map((date, i) => ({
+                date,
+                maxTemp: Math.round(daily.temperature_2m_max[i]),
+                minTemp: Math.round(daily.temperature_2m_min[i]),
+                description: mapWMODesc(daily.weather_code[i]),
+                icon: mapWMOIcon(daily.weather_code[i]),
+                precipitation: daily.precipitation_sum[i],
+                humidity: 60, // Fallback as OpenMeteo daily humidity isn't directly exposed
+            })),
+            location: locName,
+        };
+
+        setCache(cacheKey, result);
+        return result;
+    } catch (err) {
+        console.error('Weather fetching error:', err);
+        return getFallbackWeather(location);
+    }
+}
+
+function mapWMOIcon(code) {
+    if ([0].includes(code)) return '☀️';
+    if ([1, 2, 3].includes(code)) return '⛅';
+    if ([45, 48].includes(code)) return '🌫️';
+    if ([51, 53, 55, 56, 57].includes(code)) return '🌧️';
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌧️';
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
+    if ([95, 96, 99].includes(code)) return '⛈️';
+    return '🌤️';
+}
+
+function mapWMODesc(code) {
+    if (code === 0) return 'Clear';
+    if ([1, 2, 3].includes(code)) return 'Partly Cloudy';
+    if ([45, 48].includes(code)) return 'Fog';
+    if ([51, 53, 55, 56, 57].includes(code)) return 'Drizzle';
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'Rain';
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return 'Snow';
+    if ([95, 96, 99].includes(code)) return 'Thunderstorm';
+    return 'Clear';
+}
+
+function getFallbackWeather(loc) {
+    return {
+        current: { temp: 28, feelsLike: 30, humidity: 65, windSpeed: 12, description: 'Partly Cloudy', icon: '⛅', precipitation: 0, uvIndex: 6, visibility: 10, pressure: 1013 },
+        forecast: Array.from({ length: 7 }, (_, i) => ({
+            date: new Date(Date.now() + i * 86400000).toISOString().split('T')[0],
+            maxTemp: 32, minTemp: 22, description: 'Clear', icon: '☀️', precipitation: 0, humidity: 60,
+        })),
+        location: loc === 'auto' ? 'Your Location' : loc,
+    };
 }
