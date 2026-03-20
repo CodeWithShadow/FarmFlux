@@ -202,15 +202,24 @@ export async function uploadCropImage(userId, file) {
 
 /* ─── User Stats ─── */
 export async function getUserStats(userId) {
-    const [diseases, soils, yields, irrigations] = await Promise.all([
-        supabase.from('disease_analyses').select('id', { count: 'exact' }).eq('user_id', userId),
-        supabase.from('soil_analyses').select('id', { count: 'exact' }).eq('user_id', userId),
-        supabase.from('yield_predictions').select('id', { count: 'exact' }).eq('user_id', userId),
-        supabase.from('irrigation_logs').select('id', { count: 'exact' }).eq('user_id', userId),
+    const [allDiseases, detectedDiseases, soils, yields, irrigations] = await Promise.all([
+        supabase.from('disease_analyses').select('*', { count: 'exact', head: true }).eq('user_id', userId),
+        supabase.from('disease_analyses').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('is_healthy', false),
+        supabase.from('soil_analyses').select('*', { count: 'exact', head: true }).eq('user_id', userId),
+        supabase.from('yield_predictions').select('*', { count: 'exact', head: true }).eq('user_id', userId),
+        supabase.from('irrigation_logs').select('*', { count: 'exact', head: true }).eq('user_id', userId),
     ]);
+
+    // Log errors if any counting queries fail (e.g. missing RLS or tables)
+    if (allDiseases.error) console.error("Error counting all diseases:", allDiseases.error);
+    if (detectedDiseases.error) console.error("Error counting detected diseases:", detectedDiseases.error);
+    if (soils.error) console.error("Error counting soils:", soils.error);
+    if (yields.error) console.error("Error counting yields:", yields.error);
+    if (irrigations.error) console.error("Error counting irrigations:", irrigations.error);
+
     return {
-        totalAnalyses: (diseases.count || 0) + (soils.count || 0),
-        diseasesDetected: diseases.count || 0,
+        totalAnalyses: (allDiseases.count || 0) + (soils.count || 0),
+        diseasesDetected: detectedDiseases.count || 0,
         cropsMonitored: yields.count || 0,
         waterSaved: (irrigations.count || 0) * 150,
     };
