@@ -60,8 +60,8 @@ export default function Dashboard() {
     // Dispatch Notification for Severe Weather
     useEffect(() => {
         if (weather?.current) {
-            const temp = weather.current.temp_c;
-            const condition = weather.current.condition.text.toLowerCase();
+            const temp = weather.current.temp || 0;
+            const condition = (weather.current.description || '').toLowerCase();
             const isSevere = condition.includes('rain') || condition.includes('storm') || condition.includes('extreme') || condition.includes('snow') || temp > 40 || temp < 5;
             
             if (isSevere) {
@@ -69,7 +69,7 @@ export default function Dashboard() {
                     id: `weather_alert_${new Date().toDateString()}`,
                     type: 'weather',
                     title: 'Weather Advisory',
-                    message: `${weather.current.condition.text} (${temp}°C) expected. Please protect your crops if necessary.`
+                    message: `${weather.current.description || 'Severe weather'} (${temp}°C) expected. Please protect your crops if necessary.`
                 });
             }
         }
