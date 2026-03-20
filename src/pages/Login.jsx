@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { signInWithGoogle } from '../services/supabase';
-import { useAuth } from '../hooks/useAuth';
+import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { Leaf } from 'lucide-react';
 
@@ -48,7 +48,7 @@ function Particles() {
 }
 
 export default function Login() {
-    const { user } = useAuth();
+    const { user } = useStore();
     const navigate = useNavigate();
 
     useEffect(() => {

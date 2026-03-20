@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useAuth } from './hooks/useAuth';
+import { AuthProvider } from './components/auth/AuthProvider';
 import useStore from './store/useStore';
 import Sidebar from './components/layout/Sidebar';
 import BottomNav from './components/layout/BottomNav';
@@ -21,15 +21,7 @@ import UrbanFarming from './pages/UrbanFarming';
 import Profile from './pages/Profile';
 
 function ProtectedRoute({ children }) {
-    const { user, loading } = useAuth();
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-farm-bg">
-                <LoadingSpinner text="Loading FarmFlux..." size="lg" />
-            </div>
-        );
-    }
+    const { user } = useStore();
 
     if (!user) {
         return <Navigate to="/login" replace />;
@@ -154,8 +146,10 @@ function AnimatedRoutes() {
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <AnimatedRoutes />
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <AnimatedRoutes />
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
