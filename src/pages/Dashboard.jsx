@@ -18,7 +18,7 @@ const quickActions = [
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const { user, stats, setStats, recentAnalyses, setRecentAnalyses, diseaseAlerts, setDiseaseAlerts } = useStore();
+    const { user, stats, setStats, recentAnalyses, setRecentAnalyses, diseaseAlerts, setDiseaseAlerts, weather, addNotification } = useStore();
     const [loading, setLoading] = useState(true);
 
     const greeting = () => {
@@ -42,10 +42,38 @@ export default function Dashboard() {
                 setStats(s);
                 setRecentAnalyses(r);
                 setDiseaseAlerts(a);
+
+                // Dispatch Notification for Disease Alerts
+                if (a && a.length > 0) {
+                    addNotification({
+                        id: `disease_alert_${a.length}`,
+                        type: 'warning',
+                        title: 'Disease Alerts Nearby',
+                        message: `${a.length} crop disease${a.length > 1 ? 's' : ''} reported in your area. Check the alerts map.`
+                    });
+                }
             } catch (err) { console.error(err); }
             setLoading(false);
         })();
-    }, [user]);
+    }, [user, addNotification, setStats, setRecentAnalyses, setDiseaseAlerts]);
+
+    // Dispatch Notification for Severe Weather
+    useEffect(() => {
+        if (weather?.current) {
+            const temp = weather.current.temp_c;
+            const condition = weather.current.condition.text.toLowerCase();
+            const isSevere = condition.includes('rain') || condition.includes('storm') || condition.includes('extreme') || condition.includes('snow') || temp > 40 || temp < 5;
+            
+            if (isSevere) {
+                addNotification({
+                    id: `weather_alert_${new Date().toDateString()}`,
+                    type: 'weather',
+                    title: 'Weather Advisory',
+                    message: `${weather.current.condition.text} (${temp}°C) expected. Please protect your crops if necessary.`
+                });
+            }
+        }
+    }, [weather, addNotification]);
 
     const performanceScore = Math.min(
         Math.round(((stats.totalAnalyses * 5) + (stats.cropsMonitored * 10) + (stats.waterSaved / 100)) / 3),

@@ -1,12 +1,42 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Menu, Bell, Wifi, WifiOff } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, Bell, Wifi, WifiOff, CheckCircle, AlertTriangle, CloudLightning, ShoppingBag, X } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { useOffline } from '../../hooks/useOffline';
 
 export default function TopBar() {
-    const { toggleSidebar, user } = useStore();
+    const { toggleSidebar, user, notifications, markNotificationsRead } = useStore();
     const { isOnline } = useOffline();
+    const [showNotifs, setShowNotifs] = useState(false);
+    const notifRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (notifRef.current && !notifRef.current.contains(event.target)) setShowNotifs(false);
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    const handleBellClick = () => {
+        setShowNotifs(!showNotifs);
+        if (!showNotifs && unreadCount > 0) {
+            markNotificationsRead();
+        }
+    };
+
+    const getIcon = (type) => {
+        switch (type) {
+            case 'success': return <CheckCircle className="w-5 h-5 text-[#4ADE80]" />;
+            case 'warning': return <AlertTriangle className="w-5 h-5 text-[#EF4444]" />;
+            case 'weather': return <CloudLightning className="w-5 h-5 text-[#60A5FA]" />;
+            case 'buy': return <ShoppingBag className="w-5 h-5 text-[#FCD34D]" />;
+            case 'sell': return <ShoppingBag className="w-5 h-5 text-[#4ADE80]" />;
+            default: return <Bell className="w-5 h-5 text-farm-text-secondary" />;
+        }
+    };
 
     return (
         <motion.header
@@ -45,14 +75,61 @@ export default function TopBar() {
                 </motion.div>
 
                 {/* Notifications */}
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="relative w-9 h-9 rounded-lg flex items-center justify-center hover:bg-farm-card transition-colors"
-                >
-                    <Bell className="w-5 h-5 text-farm-text-secondary" />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-farm-accent animate-pulse" />
-                </motion.button>
+                <div className="relative" ref={notifRef}>
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handleBellClick}
+                        className={`relative w-9 h-9 rounded-lg flex items-center justify-center hover:bg-farm-card transition-colors ${showNotifs ? 'bg-farm-card' : ''}`}
+                    >
+                        <Bell className="w-5 h-5 text-farm-text-secondary" />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-farm-accent border-2 border-farm-bg flex items-center justify-center">
+                                {/* Optional: tiny dot */}
+                            </span>
+                        )}
+                    </motion.button>
+
+                    {/* Dropdown Panel */}
+                    <AnimatePresence>
+                        {showNotifs && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute right-0 mt-2 w-80 bg-farm-bg/95 backdrop-blur-xl border border-farm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col"
+                            >
+                                <div className="px-4 py-3 border-b border-farm-border flex items-center justify-between bg-farm-card/50">
+                                    <h3 className="font-syne font-bold text-farm-text">Notifications</h3>
+                                    {unreadCount > 0 && <span className="text-xs bg-farm-accent/20 text-farm-accent px-2 py-0.5 rounded-full font-mono">{unreadCount} new</span>}
+                                </div>
+                                <div className="max-h-[70vh] overflow-y-auto no-scrollbar">
+                                    {notifications.length === 0 ? (
+                                        <div className="p-6 text-center text-farm-text-muted text-sm font-dm">
+                                            No notifications yet
+                                        </div>
+                                    ) : (
+                                        notifications.map((notif) => (
+                                            <div key={notif.id} className={`p-4 border-b border-farm-border/50 hover:bg-farm-card/50 transition-colors flex gap-3 ${!notif.read ? 'bg-farm-accent/5' : ''}`}>
+                                                <div className="flex-shrink-0 mt-0.5">
+                                                    {getIcon(notif.type)}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-farm-text mb-0.5">{notif.title}</p>
+                                                    <p className="text-xs text-farm-text-secondary font-dm line-clamp-2">{notif.message}</p>
+                                                    <p className="text-[10px] text-farm-text-muted font-mono mt-1.5">
+                                                        {new Date(notif.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
 
                 {/* Avatar */}
                 <motion.div

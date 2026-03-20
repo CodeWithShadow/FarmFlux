@@ -11,7 +11,7 @@ import { CROPS } from '../utils/cropRecommendations';
 import { Plus, X, Sparkles, Filter } from 'lucide-react';
 
 export default function Marketplace() {
-    const { user, listings, myListings, setListings, setMyListings } = useStore();
+    const { user, listings, myListings, setListings, setMyListings, addNotification } = useStore();
     const [tab, setTab] = useState('browse');
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -89,9 +89,21 @@ export default function Marketplace() {
 
     const handlePurchaseComplete = async (id) => {
         try {
-            // Optional: delete or mark as sold. For a test, we can just close the modal.
-            // If we want to simulate it being bought, we can delete it:
             await deleteListing(id);
+            
+            if (selectedListingForPurchase) {
+                addNotification({
+                    type: 'buy',
+                    title: 'Purchase Successful',
+                    message: `You bought ${selectedListingForPurchase.quantity}${selectedListingForPurchase.unit} of ${selectedListingForPurchase.crop_name}.`
+                });
+                addNotification({
+                    type: 'sell',
+                    title: 'Item Sold (Simulated)',
+                    message: `Your listing for ${selectedListingForPurchase.quantity}${selectedListingForPurchase.unit} of ${selectedListingForPurchase.crop_name} was bought.`
+                });
+            }
+
             setSelectedListingForPurchase(null);
             loadData();
         } catch (err) { console.error(err); }

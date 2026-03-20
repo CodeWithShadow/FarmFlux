@@ -55,6 +55,25 @@ const useStore = create((set, get) => ({
     addPendingSync: (item) => set((s) => ({ pendingSync: [...s.pendingSync, item] })),
     clearPendingSync: () => set({ pendingSync: [] }),
 
+    // Notifications
+    notifications: [],
+    addNotification: (notification) => set((s) => {
+        // Prevent duplicate notifications if a custom ID is provided
+        if (notification.id && s.notifications.some(n => n.id === notification.id)) return s;
+        return {
+            notifications: [{
+                id: notification.id || Date.now().toString(),
+                date: new Date().toISOString(),
+                read: false,
+                ...notification
+            }, ...s.notifications]
+        };
+    }),
+    markNotificationsRead: () => set((s) => ({
+        notifications: s.notifications.map(n => ({ ...n, read: true }))
+    })),
+    clearNotifications: () => set({ notifications: [] }),
+
     // Recent Analyses
     recentAnalyses: [],
     setRecentAnalyses: (data) => set({ recentAnalyses: data }),
