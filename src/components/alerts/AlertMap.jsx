@@ -6,7 +6,11 @@ function MapUpdater({ center }) {
     const map = useMap();
     useEffect(() => {
         if (center) map.setView(center, map.getZoom());
-    }, [center]);
+        const timeout = setTimeout(() => {
+            map.invalidateSize();
+        }, 300);
+        return () => clearTimeout(timeout);
+    }, [center, map]);
     return null;
 }
 
@@ -18,7 +22,7 @@ export default function AlertMap({ alerts = [], center = [20.5937, 78.9629], zoo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="rounded-lg overflow-hidden border border-farm-border h-[500px] md:h-[600px]"
+            className="rounded-lg overflow-hidden border border-farm-border h-[500px] md:h-[600px] relative z-0"
         >
             <MapContainer
                 center={center}

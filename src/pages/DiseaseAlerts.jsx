@@ -44,7 +44,9 @@ export default function DiseaseAlerts() {
 
             if (!form.latitude && navigator.geolocation) {
                 try {
-                    const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 5000 }));
+                    const getPos = new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 5000 }));
+                    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000));
+                    const pos = await Promise.race([getPos, timeout]);
                     lat = pos.coords.latitude;
                     lng = pos.coords.longitude;
                 } catch { /* use defaults */ }
@@ -140,7 +142,7 @@ export default function DiseaseAlerts() {
                 <AnimatePresence>
                     {showForm && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                             onClick={() => setShowForm(false)}>
                             <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9 }}
                                 className="bg-farm-bg-secondary border border-farm-border rounded-xl p-6 w-full max-w-lg"

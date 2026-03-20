@@ -7,6 +7,17 @@ const useStore = create((set, get) => ({
     setUser: (user) => set({ user }),
     setSession: (session) => set({ session }),
 
+    // Settings
+    geminiApiKey: localStorage.getItem('farmflux_gemini_api_key') || '',
+    setGeminiApiKey: (key) => {
+        if (key) {
+            localStorage.setItem('farmflux_gemini_api_key', key);
+        } else {
+            localStorage.removeItem('farmflux_gemini_api_key');
+        }
+        set({ geminiApiKey: key });
+    },
+
     // UI
     sidebarOpen: true,
     toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
