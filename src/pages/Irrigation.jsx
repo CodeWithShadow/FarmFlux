@@ -19,7 +19,6 @@ export default function Irrigation() {
     const [result, setResult] = useState('');
     const [irrigateToday, setIrrigateToday] = useState(null);
     const [waterEfficiency, setWaterEfficiency] = useState(null);
-    const [error, setError] = useState('');
 
     const handleChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -29,7 +28,6 @@ export default function Irrigation() {
         setResult('');
         setIrrigateToday(null);
         setWaterEfficiency(null);
-        setError('');
 
         try {
             const weather = await getWeather(form.location || 'auto');
@@ -67,7 +65,6 @@ export default function Irrigation() {
             }
         } catch (err) {
             console.error(err);
-            setError(err.message || 'Failed to generate irrigation schedule. Please try again.');
             setLoading(false);
         }
     };
@@ -123,12 +120,6 @@ export default function Irrigation() {
                 </form>
 
                 {loading && <LoadingSpinner text="Calculating optimal irrigation schedule..." />}
-
-                {error && (
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg">
-                        <p className="text-sm text-red-400 font-dm">⚠️ {error}</p>
-                    </motion.div>
-                )}
 
                 {irrigateToday !== null && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

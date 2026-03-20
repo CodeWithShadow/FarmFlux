@@ -14,7 +14,6 @@ export default function UrbanFarming() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState('');
     const [expandedCrop, setExpandedCrop] = useState(null);
-    const [error, setError] = useState('');
 
     const handleChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -22,7 +21,6 @@ export default function UrbanFarming() {
         e.preventDefault();
         setLoading(true);
         setResult('');
-        setError('');
 
         try {
             await getUrbanFarmingRecommendations(form, (text, done) => {
@@ -38,7 +36,6 @@ export default function UrbanFarming() {
             setLoading(false);
         } catch (err) {
             console.error(err);
-            setError(err.message || 'Failed to generate recommendations. Please try again.');
             setLoading(false);
         }
     };
@@ -99,12 +96,6 @@ export default function UrbanFarming() {
                 </form>
 
                 {loading && <LoadingSpinner text="Finding best crops for your space..." />}
-
-                {error && (
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg">
-                        <p className="text-sm text-red-400 font-dm">⚠️ {error}</p>
-                    </motion.div>
-                )}
 
                 {result && (
                     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

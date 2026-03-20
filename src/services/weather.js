@@ -47,17 +47,14 @@ export async function getWeather(location = 'auto') {
         let lon = 77.2090;
         let locName = 'Delhi';
 
-        // Resolve actual location name via browser geolocation when 'auto'
-        const resolvedLocation = location === 'auto' ? await getUserLocation() : location;
-
-        if (resolvedLocation) {
-            const geoRes = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(resolvedLocation)}&count=1&language=en&format=json`);
+        if (location !== 'auto') {
+            const geoRes = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
             if (geoRes.data.results?.[0]) {
                 lat = geoRes.data.results[0].latitude;
                 lon = geoRes.data.results[0].longitude;
                 locName = geoRes.data.results[0].name;
             } else {
-                locName = resolvedLocation;
+                locName = location;
             }
         }
 

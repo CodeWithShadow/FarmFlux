@@ -16,7 +16,6 @@ export default function DiseaseAlerts() {
     const [submitting, setSubmitting] = useState(false);
     const [selectedAlert, setSelectedAlert] = useState(null);
     const [filters, setFilters] = useState({ severity: '', disease_type: '' });
-    const [error, setError] = useState('');
     const [form, setForm] = useState({
         disease_name: '', crop_name: '', severity: 'medium', latitude: '', longitude: '', description: '',
     });
@@ -25,11 +24,10 @@ export default function DiseaseAlerts() {
 
     const loadAlerts = async () => {
         setLoading(true);
-        setError('');
         try {
             const data = await getDiseaseAlerts(filters);
             setDiseaseAlerts(data);
-        } catch (err) { console.error(err); setError('Failed to load disease alerts. Please try again.'); }
+        } catch (err) { console.error(err); }
         setLoading(false);
     };
 
@@ -107,12 +105,6 @@ export default function DiseaseAlerts() {
                 </motion.div>
 
                 {/* Map */}
-                {error && (
-                    <motion.div variants={staggerItem} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg">
-                        <p className="text-sm text-red-400 font-dm">⚠️ {error}</p>
-                    </motion.div>
-                )}
-
                 {loading ? <LoadingSpinner text="Loading disease alerts..." /> : (
                     <motion.div variants={staggerItem}>
                         <AlertMap alerts={diseaseAlerts} onMarkerClick={setSelectedAlert} />

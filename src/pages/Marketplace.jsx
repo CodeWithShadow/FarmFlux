@@ -19,7 +19,6 @@ export default function Marketplace() {
     const [submitting, setSubmitting] = useState(false);
     const [aiPrice, setAiPrice] = useState(null);
     const [filter, setFilter] = useState({ crop_type: '' });
-    const [error, setError] = useState('');
 
     useEffect(() => {
         loadData();
@@ -27,7 +26,6 @@ export default function Marketplace() {
 
     const loadData = async () => {
         setLoading(true);
-        setError('');
         try {
             const [allListings, mine] = await Promise.all([
                 getListings(filter),
@@ -35,7 +33,7 @@ export default function Marketplace() {
             ]);
             setListings(allListings);
             setMyListings(mine);
-        } catch (err) { console.error(err); setError('Failed to load listings. Please try again.'); }
+        } catch (err) { console.error(err); }
         setLoading(false);
     };
 
@@ -129,12 +127,6 @@ export default function Marketplace() {
                 )}
 
                 {/* Listings */}
-                {error && (
-                    <motion.div variants={staggerItem} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg">
-                        <p className="text-sm text-red-400 font-dm">⚠️ {error}</p>
-                    </motion.div>
-                )}
-
                 {loading ? <LoadingSpinner text="Loading marketplace..." /> : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {(tab === 'browse' ? listings : myListings).map((listing, i) => (
