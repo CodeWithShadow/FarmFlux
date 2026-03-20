@@ -19,6 +19,7 @@ export default function YieldPrediction() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState('');
     const [predictedYield, setPredictedYield] = useState(null);
+    const [error, setError] = useState('');
 
     const handleChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -27,6 +28,7 @@ export default function YieldPrediction() {
         setLoading(true);
         setResult('');
         setPredictedYield(null);
+        setError('');
 
         try {
             const weather = await getWeather(form.location || 'auto');
@@ -63,6 +65,7 @@ export default function YieldPrediction() {
             }
         } catch (err) {
             console.error(err);
+            setError(err.message || 'Failed to generate yield prediction. Please try again.');
             setLoading(false);
         }
     };
@@ -139,6 +142,12 @@ export default function YieldPrediction() {
                 </form>
 
                 {loading && <LoadingSpinner text="Analyzing yield factors with AI..." />}
+
+                {error && (
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <p className="text-sm text-red-400 font-dm">⚠️ {error}</p>
+                    </motion.div>
+                )}
 
                 {predictedYield && (
                     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-farm-card border-l-4 border-farm-accent p-8 rounded-r-lg text-center">
