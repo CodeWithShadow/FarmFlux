@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { supabase, ensureUserInDB } from '../services/supabase';
-import useStore from '../store/useStore';
-import LoadingSpinner from './ui/LoadingSpinner';
+import { supabase, ensureUserInDB } from '../../services/supabase';
+import useStore from '../../store/useStore';
+import LoadingSpinner from '../ui/LoadingSpinner';
 
 export function AuthProvider({ children }) {
     const { setUser, setSession } = useStore();
