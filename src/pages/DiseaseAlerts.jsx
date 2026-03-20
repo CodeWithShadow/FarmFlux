@@ -70,13 +70,21 @@ export default function DiseaseAlerts() {
         setSubmitting(false);
     };
 
+    const [deleting, setDeleting] = useState(false);
+
     const handleDeleteAlert = async () => {
         if (!selectedAlert || !user) return;
+        setDeleting(true);
         try {
             await deleteDiseaseAlert(selectedAlert.id);
             setSelectedAlert(null);
             loadAlerts();
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error('Delete error:', err); 
+            alert(`Could not delete: ${err.message}. If this is an RLS policy issue, please run the SQL command to allow DELETES on disease_alerts.`);
+        } finally {
+            setDeleting(false);
+        }
     };
 
     const inputClass = "w-full px-4 py-3 bg-farm-bg border border-farm-border rounded-lg text-farm-text font-dm text-sm input-animated";
@@ -139,8 +147,12 @@ export default function DiseaseAlerts() {
                                     <div className="flex items-center gap-4 mt-1">
                                         <p className="text-xs text-farm-text-muted">Reported by {selectedAlert.reporter_name}</p>
                                         {user?.id === selectedAlert.user_id && (
-                                            <button onClick={handleDeleteAlert} className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-farm-danger hover:bg-farm-danger hover:text-farm-bg transition-colors">
-                                                Delete
+                                            <button 
+                                                onClick={handleDeleteAlert} 
+                                                disabled={deleting}
+                                                className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-farm-danger hover:bg-farm-danger hover:text-farm-bg transition-colors disabled:opacity-50"
+                                            >
+                                                {deleting ? 'Deleting...' : 'Delete'}
                                             </button>
                                         )}
                                     </div>
