@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Tag, User, Sparkles } from 'lucide-react';
 
-export default function ListingCard({ listing, index = 0 }) {
+export default function ListingCard({ listing, index = 0, onBuyClick }) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -74,6 +74,18 @@ export default function ListingCard({ listing, index = 0 }) {
                         </div>
                     </div>
                 )}
+
+                <div className="pt-3 mt-2 border-t border-farm-border/50">
+                    <button 
+                        onClick={(e) => { 
+                            e.stopPropagation(); 
+                            if (onBuyClick) onBuyClick(listing); 
+                        }}
+                        className="w-full py-2 bg-farm-accent/10 text-farm-accent hover:bg-farm-accent hover:text-farm-bg transition-colors rounded-lg font-syne font-bold text-sm"
+                    >
+                        Buy Now
+                    </button>
+                </div>
             </div>
         </motion.div>
     );

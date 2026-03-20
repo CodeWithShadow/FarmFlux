@@ -4,6 +4,7 @@ import PageWrapper, { staggerContainer, staggerItem } from '../components/layout
 import ListingCard from '../components/marketplace/ListingCard';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import useStore from '../store/useStore';
+import PurchaseModal from '../components/marketplace/PurchaseModal';
 import { getListings, getMyListings, createListing, uploadCropImage, deleteListing } from '../services/supabase';
 import { getMarketplacePriceSuggestion } from '../services/gemini';
 import { CROPS } from '../utils/cropRecommendations';
@@ -19,6 +20,7 @@ export default function Marketplace() {
     const [submitting, setSubmitting] = useState(false);
     const [aiPrice, setAiPrice] = useState(null);
     const [filter, setFilter] = useState({ crop_type: '' });
+    const [selectedListingForPurchase, setSelectedListingForPurchase] = useState(null);
 
     useEffect(() => {
         loadData();
@@ -85,6 +87,16 @@ export default function Marketplace() {
         } catch (err) { console.error(err); }
     };
 
+    const handlePurchaseComplete = async (id) => {
+        try {
+            // Optional: delete or mark as sold. For a test, we can just close the modal.
+            // If we want to simulate it being bought, we can delete it:
+            await deleteListing(id);
+            setSelectedListingForPurchase(null);
+            loadData();
+        } catch (err) { console.error(err); }
+    };
+
     const inputClass = "w-full px-4 py-3 bg-farm-bg border border-farm-border rounded-lg text-farm-text font-dm text-sm input-animated";
     const labelClass = "text-xs text-farm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
 
@@ -131,7 +143,11 @@ export default function Marketplace() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {(tab === 'browse' ? listings : myListings).map((listing, i) => (
                             <div key={listing.id || i} className="relative">
-                                <ListingCard listing={listing} index={i} />
+                                <ListingCard 
+                                    listing={listing} 
+                                    index={i} 
+                                    onBuyClick={(item) => setSelectedListingForPurchase(item)} 
+                                />
                                 {tab === 'my' && (
                                     <motion.button whileTap={{ scale: 0.9 }} onClick={() => handleDelete(listing.id)}
                                         className="absolute top-2 right-2 w-8 h-8 rounded-full bg-farm-danger/80 flex items-center justify-center text-white z-10">
@@ -202,6 +218,16 @@ export default function Marketplace() {
                     )}
                 </AnimatePresence>
             </motion.div>
+
+            <AnimatePresence>
+                {selectedListingForPurchase && (
+                    <PurchaseModal 
+                        listing={selectedListingForPurchase}
+                        onClose={() => setSelectedListingForPurchase(null)}
+                        onComplete={handlePurchaseComplete}
+                    />
+                )}
+            </AnimatePresence>
         </PageWrapper>
     );
 }
