@@ -23,47 +23,13 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'google-fonts-cache', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 } }
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'gstatic-fonts-cache', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 } }
-          },
-          {
-            urlPattern: /^https:\/\/rzonewqciywrjdytapax\.supabase\.co\/rest\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'supabase-api-cache', expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 } }
-          },
-          {
-            urlPattern: /^https:\/\/api\.wttr\.in\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'weather-cache', expiration: { maxEntries: 5, maxAgeSeconds: 60 * 30 } }
-          },
-          {
-            urlPattern: /\.json$/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'tf-model-cache', expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 30 } }
-          }
-        ]
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}']
       }
     })
   ],
-  optimizeDeps: {
-    exclude: ['@tensorflow/tfjs']
-  },
   build: {
     rollupOptions: {
-      external: ['@tensorflow/tfjs'],
       output: {
-        globals: {
-          '@tensorflow/tfjs': 'tf'
-        },
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion']
         }

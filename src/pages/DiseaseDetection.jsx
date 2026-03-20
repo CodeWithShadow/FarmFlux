@@ -5,7 +5,7 @@ import ImageUploader from '../components/ui/ImageUploader';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import DiseaseResult from '../components/disease/DiseaseResult';
 import useStore from '../store/useStore';
-import { analyzeDiseaseImage } from '../services/gemini';
+import { analyzeDisease } from '../services/plantDiseaseService';
 import { saveDiseaseAnalysis, uploadCropImage } from '../services/supabase';
 import { getCropFromDisease, isHealthy } from '../utils/diseaseClasses';
 import { useOffline } from '../hooks/useOffline';
@@ -17,7 +17,7 @@ export default function DiseaseDetection() {
     const [imageFile, setImageFile] = useState(null);
     const [heatmapSrc, setHeatmapSrc] = useState(null);
     const [treatmentText, setTreatmentText] = useState('');
-    const [modelProgress, setModelProgress] = useState(0);
+    const [progressText, setProgressText] = useState('');
     const imgRef = useRef(null);
 
     const handleImageSelect = (file, dataUrl) => {
@@ -32,12 +32,16 @@ export default function DiseaseDetection() {
         if (!imageSrc) return;
         setDiseaseLoading(true);
         setTreatmentText('');
+        setProgressText('Preparing image...');
 
         try {
-            // Run Gemini Vision API inference directly
-            const result = await analyzeDiseaseImage(imageSrc);
+            // Run plant disease classification
+            const result = await analyzeDisease(imageSrc, (progress) => {
+                setProgressText(progress);
+            });
             setDiseaseResult(result);
-            setTreatmentText(result.treatment);
+            setTreatmentText(result.treatment || '');
+            setProgressText('');
 
             // Save to Supabase
             if (user) {
@@ -64,7 +68,8 @@ export default function DiseaseDetection() {
             }
         } catch (err) {
             console.error('Analysis error:', err);
-            alert(`Analysis Error: ${err.message}`);
+            setProgressText('');
+            alert(`Analysis failed: ${err.message}\n\nPlease try again or use a clearer image.`);
             setDiseaseLoading(false);
         }
     };
@@ -105,7 +110,7 @@ export default function DiseaseDetection() {
                             className="w-full py-4 bg-farm-accent text-farm-bg font-syne font-bold text-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                         >
                             {diseaseLoading ? (
-                                <LoadingSpinner text="Analyzing leaf patterns..." size="sm" />
+                                <LoadingSpinner text={progressText || 'Analyzing leaf patterns...'} size="sm" />
                             ) : (
                                 'Analyze with AI'
                             )}
@@ -116,7 +121,7 @@ export default function DiseaseDetection() {
                 {/* Loading */}
                 {diseaseLoading && !diseaseResult && (
                     <motion.div variants={staggerItem}>
-                        <LoadingSpinner text="Running neural network inference..." />
+                        <LoadingSpinner text={progressText || 'Running AI classification model...'} />
                     </motion.div>
                 )}
 

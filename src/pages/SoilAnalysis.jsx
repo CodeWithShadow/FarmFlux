@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ConfidenceBar from '../components/ui/ConfidenceBar';
 import TypewriterText from '../components/ui/TypewriterText';
 import useStore from '../store/useStore';
-import { analyzeSoilImage } from '../services/gemini';
+import { analyzeSoilImage } from '../services/soilAnalysisService';
 import { saveSoilAnalysis, uploadCropImage } from '../services/supabase';
 import { SOIL_CROP_MAP } from '../utils/cropRecommendations';
 
@@ -16,6 +16,7 @@ export default function SoilAnalysis() {
     const [imageFile, setImageFile] = useState(null);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [progressText, setProgressText] = useState('');
     const [aiText, setAiText] = useState('');
 
     const handleImageSelect = (file, dataUrl) => {
@@ -23,15 +24,18 @@ export default function SoilAnalysis() {
         setImageSrc(dataUrl);
         setResult(null);
         setAiText('');
+        setProgressText('');
     };
 
     const handleAnalyze = async () => {
         if (!imageSrc) return;
         setLoading(true);
         setAiText('');
+        setProgressText('');
 
         try {
-            const res = await analyzeSoilImage(imageSrc);
+            setProgressText('Initializing offline model...');
+            const res = await analyzeSoilImage(imageSrc, (text) => setProgressText(text));
             setResult(res);
             setAiText(res.aiText);
             setLoading(false);
@@ -87,12 +91,12 @@ export default function SoilAnalysis() {
                             disabled={loading}
                             className="w-full py-4 bg-farm-warm text-farm-bg font-syne font-bold text-lg rounded-lg disabled:opacity-50"
                         >
-                            {loading ? <LoadingSpinner text="Classifying soil..." size="sm" /> : 'Analyze Soil'}
+                            {loading ? <LoadingSpinner text={progressText || "Classifying soil..."} size="sm" /> : 'Analyze Soil'}
                         </motion.button>
                     </motion.div>
                 )}
 
-                {loading && !result && <LoadingSpinner text="Running soil classification model..." />}
+                {loading && !result && <LoadingSpinner text={progressText || "Running soil classification model..."} />}
 
                 {result && (
                     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
