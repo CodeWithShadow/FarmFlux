@@ -158,6 +158,11 @@ export async function getDiseaseAlerts(filters = {}) {
     return data || [];
 }
 
+export async function deleteDiseaseAlert(id) {
+    const { error } = await supabase.from('disease_alerts').delete().eq('id', id);
+    if (error) throw error;
+}
+
 /* ─── Irrigation Logs CRUD ─── */
 export async function saveIrrigationLog(data) {
     const { data: result, error } = await supabase.from('irrigation_logs').insert(data).select().single();

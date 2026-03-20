@@ -4,7 +4,7 @@ import PageWrapper, { staggerContainer, staggerItem } from '../components/layout
 import AlertMap from '../components/alerts/AlertMap';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import useStore from '../store/useStore';
-import { getDiseaseAlerts, createDiseaseAlert } from '../services/supabase';
+import { getDiseaseAlerts, createDiseaseAlert, deleteDiseaseAlert } from '../services/supabase';
 import { DISEASE_CLASSES } from '../utils/diseaseClasses';
 import { CROPS } from '../utils/cropRecommendations';
 import { Plus, X, Filter } from 'lucide-react';
@@ -70,6 +70,15 @@ export default function DiseaseAlerts() {
         setSubmitting(false);
     };
 
+    const handleDeleteAlert = async () => {
+        if (!selectedAlert || !user) return;
+        try {
+            await deleteDiseaseAlert(selectedAlert.id);
+            setSelectedAlert(null);
+            loadAlerts();
+        } catch (err) { console.error(err); }
+    };
+
     const inputClass = "w-full px-4 py-3 bg-farm-bg border border-farm-border rounded-lg text-farm-text font-dm text-sm input-animated";
     const labelClass = "text-xs text-farm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
 
@@ -127,7 +136,14 @@ export default function DiseaseAlerts() {
                                 <div>
                                     <h3 className="font-syne font-bold text-xl text-farm-text">{selectedAlert.disease_name}</h3>
                                     <p className="text-sm text-farm-text-secondary mt-1">Crop: {selectedAlert.crop_name}</p>
-                                    <p className="text-xs text-farm-text-muted mt-1">Reported by {selectedAlert.reporter_name}</p>
+                                    <div className="flex items-center gap-4 mt-1">
+                                        <p className="text-xs text-farm-text-muted">Reported by {selectedAlert.reporter_name}</p>
+                                        {user?.id === selectedAlert.user_id && (
+                                            <button onClick={handleDeleteAlert} className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-farm-danger hover:bg-farm-danger hover:text-farm-bg transition-colors">
+                                                Delete
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 <button onClick={() => setSelectedAlert(null)}>
                                     <X className="w-5 h-5 text-farm-text-muted" />
