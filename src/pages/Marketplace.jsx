@@ -146,6 +146,7 @@ export default function Marketplace() {
                                 <ListingCard 
                                     listing={listing} 
                                     index={i} 
+                                    isOwner={user?.id === listing.user_id}
                                     onBuyClick={(item) => setSelectedListingForPurchase(item)} 
                                 />
                                 {tab === 'my' && (

@@ -2,17 +2,17 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Tag, User, Sparkles } from 'lucide-react';
 
-export default function ListingCard({ listing, index = 0, onBuyClick }) {
+export default function ListingCard({ listing, index = 0, onBuyClick, isOwner }) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.06 }}
             whileHover={{ y: -4, boxShadow: '0 0 30px rgba(74, 222, 128, 0.1)' }}
-            className="bg-farm-card border border-farm-border/50 rounded-lg overflow-hidden group cursor-pointer"
+            className="bg-farm-card border border-farm-border/50 rounded-lg overflow-hidden group cursor-pointer flex flex-col h-full"
         >
             {/* Image */}
-            <div className="relative h-40 bg-farm-bg overflow-hidden">
+            <div className="relative h-40 bg-farm-bg flex-shrink-0 overflow-hidden">
                 {listing.image_url ? (
                     <img
                         src={listing.image_url}
@@ -41,8 +41,8 @@ export default function ListingCard({ listing, index = 0, onBuyClick }) {
                 )}
             </div>
 
-            {/* Content */}
-            <div className="p-4 space-y-3">
+            {/* Content gap buffer */}
+            <div className="p-4 space-y-3 flex-1 flex flex-col">
                 <div className="flex items-start justify-between">
                     <div>
                         <h3 className="font-syne font-bold text-farm-text">{listing.crop_name || 'Crop'}</h3>
@@ -55,7 +55,7 @@ export default function ListingCard({ listing, index = 0, onBuyClick }) {
                     </p>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-farm-text-muted">
+                <div className="flex items-center justify-between text-xs text-farm-text-muted mt-auto mb-1">
                     <div className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         <span>{listing.location || 'India'}</span>
@@ -77,13 +77,18 @@ export default function ListingCard({ listing, index = 0, onBuyClick }) {
 
                 <div className="pt-3 mt-2 border-t border-farm-border/50">
                     <button 
+                        disabled={isOwner}
                         onClick={(e) => { 
                             e.stopPropagation(); 
-                            if (onBuyClick) onBuyClick(listing); 
+                            if (!isOwner && onBuyClick) onBuyClick(listing); 
                         }}
-                        className="w-full py-2 bg-farm-accent/10 text-farm-accent hover:bg-farm-accent hover:text-farm-bg transition-colors rounded-lg font-syne font-bold text-sm"
+                        className={`w-full py-2 rounded-lg font-syne font-bold text-sm transition-colors ${
+                            isOwner 
+                                ? 'bg-farm-bg border border-farm-border text-farm-text-muted cursor-not-allowed' 
+                                : 'bg-farm-accent/10 text-farm-accent hover:bg-farm-accent hover:text-farm-bg'
+                        }`}
                     >
-                        Buy Now
+                        {isOwner ? 'Your Listing' : 'Buy Now'}
                     </button>
                 </div>
             </div>
