@@ -1,24 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper, { staggerContainer, staggerItem } from '../components/layout/PageWrapper';
 import AlertMap from '../components/alerts/AlertMap';
+import TimelineSlider from '../components/alerts/TimelineSlider';
+import AlertRadiusSettings from '../components/alerts/AlertRadiusSettings';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import useStore from '../store/useStore';
 import { getDiseaseAlerts, createDiseaseAlert, deleteDiseaseAlert } from '../services/supabase';
 import { DISEASE_CLASSES } from '../utils/diseaseClasses';
 import { CROPS } from '../utils/cropRecommendations';
-import { Plus, X, Filter } from 'lucide-react';
+import { Plus, X, Filter, Settings } from 'lucide-react';
+
+// Haversine distance in km
+function haversineKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 export default function DiseaseAlerts() {
-    const { user, diseaseAlerts, setDiseaseAlerts } = useStore();
+    const { user, diseaseAlerts, setDiseaseAlerts, alertRadius, farmLocation, addNotification } = useStore();
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const [showRadiusSettings, setShowRadiusSettings] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [selectedAlert, setSelectedAlert] = useState(null);
     const [filters, setFilters] = useState({ severity: '', disease_type: '' });
+    const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
     const [form, setForm] = useState({
         disease_name: '', crop_name: '', severity: 'medium', latitude: '', longitude: '', description: '',
     });
+
+    // Track previously seen alert IDs to avoid duplicate notifications
+    const seenAlertIds = useRef(new Set());
 
     useEffect(() => { loadAlerts(); }, []);
 
@@ -26,6 +44,27 @@ export default function DiseaseAlerts() {
         setLoading(true);
         try {
             const data = await getDiseaseAlerts(filters);
+            // Check for proximity notifications on new alerts
+            if (farmLocation && data.length > 0) {
+                data.forEach((alert) => {
+                    if (seenAlertIds.current.has(alert.id)) return;
+                    seenAlertIds.current.add(alert.id);
+
+                    const aLat = alert.latitude || alert.lat;
+                    const aLng = alert.longitude || alert.lng;
+                    if (!aLat || !aLng) return;
+
+                    const dist = haversineKm(farmLocation.lat, farmLocation.lng, aLat, aLng);
+                    if (dist <= alertRadius) {
+                        addNotification({
+                            id: `proximity-${alert.id}`,
+                            type: 'warning',
+                            title: '⚠ Nearby Disease Alert',
+                            message: `${alert.disease_name || 'Disease'} reported ${Math.round(dist)} km from your farm${alert.crop_name ? ` in ${alert.crop_name} crops` : ''}.`,
+                        });
+                    }
+                });
+            }
             setDiseaseAlerts(data);
         } catch (err) { console.error(err); }
         setLoading(false);
@@ -38,7 +77,6 @@ export default function DiseaseAlerts() {
         if (!user) return;
         setSubmitting(true);
         try {
-            // Use user's location or defaults
             let lat = parseFloat(form.latitude) || 20.5937;
             let lng = parseFloat(form.longitude) || 78.9629;
 
@@ -87,6 +125,14 @@ export default function DiseaseAlerts() {
         }
     };
 
+    // Filter alerts by timeline date range
+    const filteredAlerts = diseaseAlerts.filter((alert) => {
+        if (!dateRange.startDate || !dateRange.endDate) return true;
+        if (!alert.created_at) return true;
+        const alertDate = new Date(alert.created_at);
+        return alertDate >= dateRange.startDate && alertDate <= dateRange.endDate;
+    });
+
     const inputClass = "w-full px-4 py-3 bg-farm-bg border border-farm-border rounded-lg text-farm-text font-dm text-sm input-animated";
     const labelClass = "text-xs text-farm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
 
@@ -100,11 +146,19 @@ export default function DiseaseAlerts() {
                             Disease<br /><span className="text-farm-warning">Alerts</span>
                         </h1>
                     </div>
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowForm(true)}
-                        className="flex items-center gap-2 px-6 py-3 bg-farm-warning text-farm-bg font-syne font-bold rounded-lg">
-                        <Plus className="w-5 h-5" />Report Disease
-                    </motion.button>
+                    <div className="flex items-center gap-3">
+                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowRadiusSettings(true)}
+                            className="flex items-center gap-2 px-4 py-3 bg-farm-card border border-farm-border text-farm-text-secondary font-syne font-bold rounded-lg hover:border-farm-accent transition-colors">
+                            <Settings className="w-4 h-4" />
+                            <span className="hidden sm:inline">Alert Radius</span>
+                        </motion.button>
+                        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                            onClick={() => setShowForm(true)}
+                            className="flex items-center gap-2 px-6 py-3 bg-farm-warning text-farm-bg font-syne font-bold rounded-lg">
+                            <Plus className="w-5 h-5" />Report Disease
+                        </motion.button>
+                    </div>
                 </motion.div>
 
                 {/* Filters */}
@@ -123,16 +177,29 @@ export default function DiseaseAlerts() {
                     </motion.button>
                 </motion.div>
 
+                {/* Timeline Slider */}
+                <motion.div variants={staggerItem}>
+                    <TimelineSlider onChange={setDateRange} />
+                </motion.div>
+
                 {/* Map */}
                 {loading ? <LoadingSpinner text="Loading disease alerts..." /> : (
                     <motion.div variants={staggerItem}>
-                        <AlertMap alerts={diseaseAlerts} onMarkerClick={setSelectedAlert} />
+                        <AlertMap
+                            alerts={filteredAlerts}
+                            onMarkerClick={setSelectedAlert}
+                            farmLocation={farmLocation}
+                            alertRadiusKm={alertRadius}
+                        />
                     </motion.div>
                 )}
 
                 {/* Alert Count */}
                 <motion.div variants={staggerItem} className="text-sm text-farm-text-muted font-mono">
-                    {diseaseAlerts.length} alert{diseaseAlerts.length !== 1 ? 's' : ''} reported
+                    {filteredAlerts.length} alert{filteredAlerts.length !== 1 ? 's' : ''} shown
+                    {filteredAlerts.length !== diseaseAlerts.length && (
+                        <span className="text-farm-text-secondary"> (of {diseaseAlerts.length} total)</span>
+                    )}
                 </motion.div>
 
                 {/* Selected Alert Detail */}
@@ -217,6 +284,9 @@ export default function DiseaseAlerts() {
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                {/* Alert Radius Settings Modal */}
+                <AlertRadiusSettings open={showRadiusSettings} onClose={() => setShowRadiusSettings(false)} />
             </motion.div>
         </PageWrapper>
     );

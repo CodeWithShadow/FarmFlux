@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, Bell, Wifi, WifiOff, CheckCircle, AlertTriangle, CloudLightning, ShoppingBag, X } from 'lucide-react';
+import { Menu, Bell, Wifi, WifiOff, CheckCircle, AlertTriangle, CloudLightning, ShoppingBag, X, Shield } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { useOffline } from '../../hooks/useOffline';
+import AlertRadiusSettings from '../alerts/AlertRadiusSettings';
 
 export default function TopBar() {
     const { toggleSidebar, user, notifications, markNotificationsRead } = useStore();
     const { isOnline } = useOffline();
     const [showNotifs, setShowNotifs] = useState(false);
+    const [showRadiusSettings, setShowRadiusSettings] = useState(false);
     const notifRef = useRef(null);
 
     useEffect(() => {
@@ -126,10 +128,22 @@ export default function TopBar() {
                                         ))
                                     )}
                                 </div>
+
+                                {/* Alert Radius Settings Link */}
+                                <button
+                                    onClick={() => { setShowNotifs(false); setShowRadiusSettings(true); }}
+                                    className="w-full flex items-center gap-2.5 px-4 py-3 border-t border-farm-border text-sm text-farm-text-secondary hover:bg-farm-card/50 hover:text-farm-accent transition-colors font-dm"
+                                >
+                                    <Shield className="w-4 h-4" />
+                                    Alert Radius Settings
+                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
+
+                {/* Alert Radius Settings Modal */}
+                <AlertRadiusSettings open={showRadiusSettings} onClose={() => setShowRadiusSettings(false)} />
 
                 {/* Avatar */}
                 <motion.div

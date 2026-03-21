@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Circle, Popup, useMap } from 'react-leaflet';
 
 function MapUpdater({ center }) {
     const map = useMap();
@@ -16,7 +16,14 @@ function MapUpdater({ center }) {
 
 const severityColors = { low: '#4ADE80', medium: '#F59E0B', high: '#EF4444' };
 
-export default function AlertMap({ alerts = [], center = [20.5937, 78.9629], zoom = 5, onMarkerClick }) {
+export default function AlertMap({
+    alerts = [],
+    center = [20.5937, 78.9629],
+    zoom = 5,
+    onMarkerClick,
+    farmLocation = null,
+    alertRadiusKm = 30,
+}) {
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -36,6 +43,49 @@ export default function AlertMap({ alerts = [], center = [20.5937, 78.9629], zoo
                 />
                 <MapUpdater center={center} />
 
+                {/* Farm Location Radius Overlay */}
+                {farmLocation && farmLocation.lat && farmLocation.lng && (
+                    <Circle
+                        center={[farmLocation.lat, farmLocation.lng]}
+                        radius={alertRadiusKm * 1000}
+                        pathOptions={{
+                            color: '#4ADE80',
+                            fillColor: '#4ADE80',
+                            fillOpacity: 0.06,
+                            weight: 1.5,
+                            dashArray: '8, 6',
+                        }}
+                    >
+                        <Popup>
+                            <div className="text-sm space-y-1">
+                                <p className="font-bold">Your Farm</p>
+                                <p className="text-gray-600">Alert radius: {alertRadiusKm} km</p>
+                            </div>
+                        </Popup>
+                    </Circle>
+                )}
+
+                {/* Farm center marker */}
+                {farmLocation && farmLocation.lat && farmLocation.lng && (
+                    <CircleMarker
+                        center={[farmLocation.lat, farmLocation.lng]}
+                        radius={6}
+                        pathOptions={{
+                            color: '#4ADE80',
+                            fillColor: '#4ADE80',
+                            fillOpacity: 0.9,
+                            weight: 2,
+                        }}
+                    >
+                        <Popup>
+                            <div className="text-sm">
+                                <p className="font-bold">📍 Your Farm Location</p>
+                            </div>
+                        </Popup>
+                    </CircleMarker>
+                )}
+
+                {/* Alert markers */}
                 {alerts.map((alert, i) => {
                     const color = severityColors[alert.severity] || severityColors.medium;
                     const lat = alert.latitude || alert.lat || 20;
