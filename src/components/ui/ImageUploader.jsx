@@ -77,7 +77,7 @@ export default function ImageUploader({ onImageSelect, accept = 'image/*' }) {
                         exit={{ opacity: 0 }}
                         className="relative rounded-lg overflow-hidden border border-farm-border"
                     >
-                        <video ref={videoRef} autoPlay playsInline className="w-full max-h-[400px] object-cover" />
+                        <video ref={videoRef} autoPlay playsInline className="w-full max-h-[60vh] bg-black rounded-lg object-contain" />
                         <canvas ref={canvasRef} className="hidden" />
                         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
                             <motion.button
