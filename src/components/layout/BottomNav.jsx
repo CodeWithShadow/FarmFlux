@@ -104,7 +104,7 @@ export default function BottomNav() {
                             <nav className="px-4 pb-4 max-h-[50vh] overflow-y-auto">
                                 {moreMenuGroups.map((group, idx) => (
                                     <div key={group.title} className={idx > 0 ? 'mt-4' : ''}>
-                                        <h4 className="text-[10px] font-semibold text-fm-text-muted uppercase tracking-wider mb-1.5 px-3">
+                                        <h4 className="text-[10px] font-semibold text-fm-text-primary uppercase tracking-wider mb-1.5 px-3">
                                             {group.title}
                                         </h4>
                                         <div className="space-y-0.5">
@@ -118,7 +118,7 @@ export default function BottomNav() {
                                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                                                             isActive
                                                                 ? 'bg-fm-accent/10 text-fm-accent'
-                                                                : 'text-fm-text-secondary hover:bg-black/5 hover:text-fm-text-primary'
+                                                                : 'text-fm-text-primary hover:bg-black/5'
                                                         }`}
                                                     >
                                                         <Icon className="w-[18px] h-[18px] flex-shrink-0" strokeWidth={1.5} />
@@ -134,7 +134,7 @@ export default function BottomNav() {
                                 <div className="mt-4 pt-3 border-t border-fm-border">
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-fm-text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-fm-text-primary hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                                     >
                                         <LogOut className="w-[18px] h-[18px]" strokeWidth={1.5} />
                                         <span>Sign Out</span>
