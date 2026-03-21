@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, Bell, Wifi, WifiOff, CheckCircle, AlertTriangle, CloudLightning, ShoppingBag, X, Shield } from 'lucide-react';
+import { Menu, Bell, Wifi, WifiOff, CheckCircle, AlertTriangle, CloudLightning, ShoppingBag, X, Shield, Sun, Moon } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { useOffline } from '../../hooks/useOffline';
 import AlertRadiusSettings from '../alerts/AlertRadiusSettings';
 
 export default function TopBar() {
-    const { toggleSidebar, user, notifications, markNotificationsRead } = useStore();
+    const { toggleSidebar, user, notifications, markNotificationsRead, isDarkMode, toggleDarkMode } = useStore();
     const { isOnline } = useOffline();
     const [showNotifs, setShowNotifs] = useState(false);
     const [showRadiusSettings, setShowRadiusSettings] = useState(false);
@@ -75,6 +75,20 @@ export default function TopBar() {
                     )}
                     <span>{isOnline ? 'Online' : 'Offline'}</span>
                 </motion.div>
+
+                {/* Theme Toggle */}
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={toggleDarkMode}
+                    className="relative w-9 h-9 rounded-lg flex items-center justify-center hover:bg-fm-bg-elevated transition-colors"
+                >
+                    {isDarkMode ? (
+                        <Moon className="w-5 h-5 text-fm-text-secondary" />
+                    ) : (
+                        <Sun className="w-5 h-5 text-fm-text-secondary" />
+                    )}
+                </motion.button>
 
                 {/* Notifications */}
                 <div className="relative" ref={notifRef}>

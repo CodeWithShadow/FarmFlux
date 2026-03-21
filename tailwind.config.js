@@ -18,6 +18,21 @@ export default {
                     'text-muted':     '#8AA88E',
                     'border':         '#C8DEC9',
                     'border-strong':  '#A8C8AB',
+                },
+                gc: {
+                    'bg-base':        '#1A1814',
+                    'bg-surface':     '#201E19',
+                    'bg-elevated':    '#2C2820',
+                    'bg-subtle':      '#383024',
+                    'accent':         '#C27A3A',
+                    'accent-hover':   '#A8642A',
+                    'accent-deep':    '#8A4E1E',
+                    'accent-muted':   '#352510',
+                    'text-primary':   '#EBE3D8',
+                    'text-secondary': '#9A9180',
+                    'text-muted':     '#6A6258',
+                    'border':         '#3A3228',
+                    'border-strong':  '#5A5040',
                 }
             },
             fontFamily: {

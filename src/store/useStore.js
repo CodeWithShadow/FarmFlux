@@ -19,6 +19,17 @@ const useStore = create((set, get) => ({
     },
 
     // UI
+    isDarkMode: localStorage.getItem('farmflux_theme') === 'dark',
+    toggleDarkMode: () => set((s) => {
+        const newTheme = !s.isDarkMode;
+        localStorage.setItem('farmflux_theme', newTheme ? 'dark' : 'light');
+        if (newTheme) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        return { isDarkMode: newTheme };
+    }),
     sidebarOpen: true,
     toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
     isMobile: window.innerWidth < 768,

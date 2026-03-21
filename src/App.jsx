@@ -36,6 +36,12 @@ function AppLayout({ children }) {
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);
+        
+        // Ensure theme matches store on mount
+        if (useStore.getState().isDarkMode) {
+            document.documentElement.classList.add('dark');
+        }
+        
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 

@@ -33,6 +33,36 @@
     --fm-stat-water:     #3A7DA8;
   }
 
+  .dark {
+    /* backgrounds */
+    --fm-bg-base:        #1A1814;
+    --fm-bg-surface:     #201E19;
+    --fm-bg-elevated:    #2C2820;
+    --fm-bg-subtle:      #383024;
+
+    /* accent - copper */
+    --fm-accent:         #C27A3A;
+    --fm-accent-hover:   #A8642A;
+    --fm-accent-deep:    #8A4E1E;
+    --fm-accent-muted:   #352510;
+
+    /* text */
+    --fm-text-primary:   #EBE3D8;
+    --fm-text-secondary: #9A9180;
+    --fm-text-muted:     #6A6258;
+    --fm-text-accent:    #C27A3A;
+
+    /* borders */
+    --fm-border-default: #3A3228;
+    --fm-border-strong:  #5A5040;
+
+    /* stat accents */
+    --fm-stat-analyses:  #C27A3A;
+    --fm-stat-disease:   #B85C5C;
+    --fm-stat-crops:     #9AB848;
+    --fm-stat-water:     #5A96C4;
+  }
+
   html {
     font-size: 14px; /* Globally scales down all rem-based Tailwind utilities */
   }
