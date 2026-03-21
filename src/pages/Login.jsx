@@ -14,88 +14,6 @@ const THEME = {
     border: "border-[#4ADE80]/20"
 };
 
-/* Floating Abstract Blobs */
-function FloatingBlobs() {
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div 
-                animate={{ rotate: 360, scale: [1, 1.2, 1], x: [0, 50, 0], y: [0, -30, 0] }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-gradient-radial from-[#4ADE80]/10 to-transparent blur-3xl mix-blend-screen"
-            />
-            <motion.div 
-                animate={{ rotate: -360, scale: [1, 1.3, 1], x: [0, -40, 0], y: [0, 60, 0] }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                className="absolute top-[40%] -right-[20%] w-[60vw] h-[60vw] rounded-full bg-gradient-radial from-[#10B981]/10 to-transparent blur-3xl mix-blend-screen"
-            />
-        </div>
-    );
-}
-
-/* Floating UI Objects (Parallax) */
-function FloatingObjects({ scrollY }) {
-    const y1 = useTransform(scrollY, [0, 1000], [0, -200]);
-    const y2 = useTransform(scrollY, [0, 1000], [0, -400]);
-    const y3 = useTransform(scrollY, [0, 1000], [0, -150]);
-    
-    // Smooth the parallax
-    const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 });
-    const smoothY2 = useSpring(y2, { stiffness: 100, damping: 30 });
-    const smoothY3 = useSpring(y3, { stiffness: 100, damping: 30 });
-
-    return (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block z-0">
-            {/* Health Status Card Floating */}
-            <motion.div 
-                style={{ y: smoothY1 }}
-                animate={{ y: [0, -20, 0], rotate: [ -5, 5, -5 ] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute top-[20%] left-[10%] p-4 rounded-2xl ${THEME.card} ${THEME.border} backdrop-blur-md shadow-2xl flex items-center gap-3`}
-            >
-                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <Activity className="w-5 h-5 text-green-400" />
-                </div>
-                <div>
-                    <p className="text-xs text-white/50 font-mono">Crop Health</p>
-                    <p className="text-sm font-bold text-white">98% Optimal</p>
-                </div>
-            </motion.div>
-
-            {/* Disease Alert Floating */}
-            <motion.div 
-                style={{ y: smoothY2 }}
-                animate={{ y: [0, 30, 0], rotate: [ 5, -5, 5 ] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className={`absolute top-[45%] right-[8%] p-4 rounded-2xl ${THEME.card} border border-red-500/30 backdrop-blur-md shadow-2xl flex items-center gap-3`}
-            >
-                <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <Bug className="w-5 h-5 text-red-500" />
-                </div>
-                <div>
-                    <p className="text-xs text-white/50 font-mono">AI Detection</p>
-                    <p className="text-sm font-bold text-white">Leaf Rust Found</p>
-                </div>
-            </motion.div>
-
-            {/* Irrigation Floating */}
-            <motion.div 
-                style={{ y: smoothY3 }}
-                animate={{ y: [0, -15, 0], scale: [1, 1.05, 1] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                className={`absolute bottom-[10%] left-[20%] p-4 rounded-2xl ${THEME.card} ${THEME.border} backdrop-blur-md shadow-2xl flex items-center gap-3`}
-            >
-                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Droplets className="w-5 h-5 text-blue-400" />
-                </div>
-                <div>
-                    <p className="text-xs text-white/50 font-mono">Smart Irrigation</p>
-                    <p className="text-sm font-bold text-white">Saved 450L Today</p>
-                </div>
-            </motion.div>
-        </div>
-    );
-}
-
 const stats = [
     { value: "30%", label: "Global crop loss to unchecked diseases & pests.", icon: Bug, color: "text-red-400" },
     { value: "70%", label: "Of world's freshwater used in agriculture.", icon: Droplets, color: "text-blue-400" },
@@ -155,8 +73,6 @@ export default function Login() {
 
     return (
         <div ref={containerRef} className={`h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b ${THEME.bg} text-white font-dm selection:bg-[#4ADE80]/30 selection:text-[#4ADE80]`}>
-            <FloatingBlobs />
-            <FloatingObjects scrollY={scrollY} />
 
             {/* Top Navigation */}
             <motion.nav 
@@ -179,11 +95,11 @@ export default function Login() {
                 </button>
             </motion.nav>
 
-            {/* Heavy Hero Section */}
-            <section className="relative min-h-[110vh] flex flex-col items-center justify-center pt-24 px-6 overflow-hidden z-10">
+            {/* Hero Section */}
+            <section className="relative min-h-screen flex flex-col items-center justify-center pt-24 px-6 overflow-hidden z-10">
                 <motion.div 
                     style={{ y: textY, opacity: textOpacity }}
-                    className="flex flex-col items-center text-center max-w-5xl mx-auto"
+                    className="flex flex-col items-center text-center max-w-4xl mx-auto"
                 >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -200,10 +116,10 @@ export default function Login() {
                         {titleLetters.map((letter, i) => (
                             <motion.span
                                 key={i}
-                                initial={{ opacity: 0, y: 100, rotateX: 90 }}
+                                initial={{ opacity: 0, y: 50, rotateX: 90 }}
                                 animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                                transition={{ delay: 0.2 + (i * 0.08), type: "spring", stiffness: 120, damping: 15 }}
-                                className="font-syne font-black text-7xl md:text-[9rem] leading-none text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 tracking-tighter"
+                                transition={{ delay: 0.2 + (i * 0.05), type: "spring", stiffness: 120, damping: 15 }}
+                                className="font-syne font-black text-5xl md:text-7xl leading-none text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 tracking-tighter"
                             >
                                 {letter}
                             </motion.span>
@@ -214,7 +130,7 @@ export default function Login() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1, duration: 1 }}
-                        className="text-lg md:text-2xl font-light text-white/70 max-w-3xl mb-16 leading-relaxed"
+                        className="text-lg md:text-xl font-light text-white/70 max-w-2xl mb-12 leading-relaxed"
                     >
                         Intelligence rooted in the soil. Next-generation edge AI tools to maximize crop yield, eliminate resource waste, and securely connect you to global markets.
                     </motion.p>
@@ -255,40 +171,40 @@ export default function Login() {
                 </motion.div>
             </section>
 
-            {/* Heavy Stats Section */}
-            <section className="py-32 px-6 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-3xl">
-                <div className="max-w-7xl mx-auto">
+            {/* Stats Section */}
+            <section className="py-24 px-6 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-3xl">
+                <div className="max-w-6xl mx-auto">
                     <motion.div 
                         initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}
-                        className="text-center mb-20"
+                        className="text-center mb-16"
                     >
-                        <h2 className="font-syne font-black text-4xl md:text-6xl mb-6 text-white tracking-tight">The world has changed. <br/><span className="text-white/40">Farming must evolve.</span></h2>
-                        <p className="text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed">
+                        <h2 className="font-syne font-bold text-3xl md:text-5xl mb-4 text-white tracking-tight">The world has changed. <br/><span className="text-white/40">Farming must evolve.</span></h2>
+                        <p className="text-lg text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
                             Climate volatility and archaic supply chains are crushing yields. Intuition is no longer sufficient; survival demands extreme data precision.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                         {stats.map((stat, i) => {
                             const Icon = stat.icon;
                             return (
                                 <motion.div 
                                     key={i}
-                                    initial={{ opacity: 0, scale: 0.8, rotateX: 45 }}
-                                    whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
                                     viewport={{ once: true, margin: "-50px" }}
-                                    transition={{ delay: i * 0.2, type: "spring", stiffness: 100, damping: 20 }}
-                                    className={`p-10 rounded-3xl ${THEME.card} border border-white/5 text-center flex flex-col items-center relative overflow-hidden group`}
+                                    transition={{ delay: i * 0.1, type: "spring", stiffness: 100, damping: 20 }}
+                                    className={`p-8 rounded-2xl ${THEME.card} border border-white/5 text-center flex flex-col items-center relative overflow-hidden group`}
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                     <motion.div 
-                                        whileHover={{ scale: 1.2, rotate: 10 }}
-                                        className={`w-20 h-20 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center mb-8 shadow-inner`}
+                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                        className={`w-16 h-16 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center mb-6 shadow-inner`}
                                     >
-                                        <Icon className={`w-10 h-10 ${stat.color} drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]`} />
+                                        <Icon className={`w-8 h-8 ${stat.color} drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]`} />
                                     </motion.div>
-                                    <h3 className="text-6xl md:text-7xl font-syne font-black mb-6 text-white tracking-tighter">{stat.value}</h3>
-                                    <p className="text-white/60 font-dm text-base leading-relaxed tracking-wide">{stat.label}</p>
+                                    <h3 className="text-4xl md:text-5xl font-syne font-bold mb-4 text-white tracking-tighter">{stat.value}</h3>
+                                    <p className="text-white/60 font-dm text-sm leading-relaxed tracking-wide">{stat.label}</p>
                                 </motion.div>
                             );
                         })}
@@ -296,20 +212,20 @@ export default function Login() {
                 </div>
             </section>
 
-            {/* Huge Feature Grid Section */}
-            <section className="py-40 px-6 relative z-10 bg-gradient-to-b from-transparent to-black/80">
-                <div className="max-w-7xl mx-auto">
+            {/* Feature Grid Section */}
+            <section className="py-24 px-6 relative z-10 bg-gradient-to-b from-transparent to-black/80">
+                <div className="max-w-6xl mx-auto">
                     <motion.div 
-                        initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 1, type: "spring" }}
-                        className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8"
+                        initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: "spring" }}
+                        className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6"
                     >
                         <div>
-                            <span className={`${THEME.accent} font-mono uppercase tracking-[0.2em] text-sm mb-6 block flex items-center gap-2`}><Cpu className="w-4 h-4"/> Deep Technology Edge</span>
-                            <h2 className="font-syne font-black text-5xl md:text-7xl text-white tracking-tighter">
+                            <span className={`${THEME.accent} font-mono uppercase tracking-[0.2em] text-sm mb-4 block flex items-center gap-2`}><Cpu className="w-4 h-4"/> Deep Technology Edge</span>
+                            <h2 className="font-syne font-bold text-4xl md:text-5xl text-white tracking-tighter">
                                 Farm intelligently.
                             </h2>
                         </div>
-                        <p className="text-white/50 max-w-md font-light text-lg">
+                        <p className="text-white/50 max-w-md font-light text-base">
                             We bring silicon-valley grade artificial intelligence directly to the field. Completely offline. Brutally fast.
                         </p>
                     </motion.div>
@@ -348,26 +264,25 @@ export default function Login() {
                 </div>
             </section>
 
-            {/* Massive Bottom CTA */}
-            <section className="py-40 px-6 relative z-10 overflow-hidden bg-black flex items-center justify-center">
-                {/* Subtle background texture */}
+            {/* Bottom CTA */}
+            <section className="py-24 px-6 relative z-10 overflow-hidden bg-black flex items-center justify-center">
                 <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4=')]" />
                 
                 <motion.div 
-                    initial={{ opacity: 0, scale: 0.5, rotate: -5 }}
+                    initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
                     whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, type: "spring", stiffness: 100 }}
-                    className="max-w-4xl mx-auto text-center relative z-10 p-12 md:p-20 rounded-[3rem] border border-white/10 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-3xl"
+                    transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+                    className="max-w-3xl mx-auto text-center relative z-10 p-8 md:p-16 rounded-[2rem] border border-white/10 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-3xl"
                 >
-                    <h2 className="font-syne font-black text-5xl md:text-8xl text-white mb-10 tracking-tighter">Enter the flux.</h2>
+                    <h2 className="font-syne font-bold text-4xl md:text-6xl text-white mb-8 tracking-tighter">Enter the flux.</h2>
                     <button
                         onClick={handleLogin}
-                        className={`inline-flex items-center gap-4 px-10 py-6 ${THEME.accentBg} text-black font-syne font-black text-xl rounded-2xl hover:bg-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(74,222,128,0.4)]`}
+                        className={`inline-flex items-center gap-3 px-8 py-4 ${THEME.accentBg} text-black font-syne font-bold text-lg rounded-xl hover:bg-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(74,222,128,0.3)]`}
                     >
-                        Sign In with Google <ArrowRight className="w-6 h-6" />
+                        Sign In with Google <ArrowRight className="w-5 h-5" />
                     </button>
-                    <p className="text-sm font-mono tracking-widest text-white/40 mt-10 uppercase">Security backed by Supabase.</p>
+                    <p className="text-xs font-mono tracking-widest text-white/40 mt-8 uppercase">Security backed by Supabase.</p>
                 </motion.div>
             </section>
             
