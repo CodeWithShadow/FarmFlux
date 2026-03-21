@@ -56,19 +56,19 @@ export default function TimelineSlider({ onChange }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-farm-card border border-farm-border rounded-lg p-4 md:p-5"
+            className="bg-fm-bg-elevated border border-fm-border rounded-lg p-4 md:p-5"
         >
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-farm-accent" />
-                    <span className="text-xs text-farm-text-muted uppercase tracking-wider font-mono">Timeline</span>
+                    <Calendar className="w-4 h-4 text-fm-accent" />
+                    <span className="text-xs text-fm-text-secondary uppercase tracking-wider font-mono">Timeline</span>
                 </div>
                 <motion.span
                     key={`${minVal}-${maxVal}`}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-sm font-medium text-farm-text font-dm"
+                    className="text-sm font-medium text-fm-text-primary font-dm"
                 >
                     {formatDateLabel(startDate)} – {formatDateLabel(endDate)}
                 </motion.span>
@@ -110,10 +110,10 @@ export default function TimelineSlider({ onChange }) {
 
             {/* Axis labels */}
             <div className="flex items-center justify-between mt-2">
-                <span className="text-[10px] text-farm-text-muted font-mono">
+                <span className="text-[10px] text-fm-text-secondary font-mono">
                     {formatDateLabel(dayToDate(0))}
                 </span>
-                <span className="text-[10px] text-farm-text-muted font-mono">
+                <span className="text-[10px] text-fm-text-secondary font-mono">
                     Today
                 </span>
             </div>
