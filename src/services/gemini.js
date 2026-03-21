@@ -4,10 +4,7 @@ const OFFLINE_CACHE_KEY = 'farmflux_gemini_cache';
 
 // Helper to get the current working model
 function getModel() {
-    const defaultKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-    const customKey = localStorage.getItem('farmflux_gemini_api_key');
-    const activeKey = customKey || defaultKey;
-    
+    const activeKey = import.meta.env.VITE_GEMINI_API_KEY || '';
     if (!activeKey) return null;
     const genAI = new GoogleGenerativeAI(activeKey);
     return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });

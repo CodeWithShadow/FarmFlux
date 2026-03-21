@@ -4,6 +4,10 @@
 
 /* ───── Grain/Noise Texture Overlay ───── */
 @layer base {
+  html {
+    font-size: 14px; /* Globally scales down all rem-based Tailwind utilities */
+  }
+
   body::before {
     content: '';
     position: fixed;

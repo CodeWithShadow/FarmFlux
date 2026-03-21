@@ -3,11 +3,10 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
     LayoutDashboard, Bug, FlaskConical, TrendingUp, ShoppingCart,
-    AlertTriangle, Droplets, Sprout, User, LogOut, Leaf, Settings
+    AlertTriangle, Droplets, Sprout, User, LogOut, Leaf
 } from 'lucide-react';
 import { signOut } from '../../services/supabase';
 import useStore from '../../store/useStore';
-import SettingsModal from '../ui/SettingsModal';
 
 const navGroups = [
     {
@@ -43,7 +42,6 @@ const navGroups = [
 export default function Sidebar() {
     const location = useLocation();
     const { sidebarOpen, user } = useStore();
-    const [settingsOpen, setSettingsOpen] = useState(false);
 
     const handleLogout = async () => {
         await signOut();
@@ -131,13 +129,6 @@ export default function Sidebar() {
                     {/* Secondary Actions tightly grouped below user */}
                     <div className="space-y-0.5">
                         <button
-                            onClick={() => setSettingsOpen(true)}
-                            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#9CA3AF] hover:text-gray-200 hover:bg-white/5 rounded-md transition-colors"
-                        >
-                            <Settings className="w-[16px] h-[16px]" strokeWidth={1.5} />
-                            <span>Settings</span>
-                        </button>
-                        <button
                             onClick={handleLogout}
                             className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#9CA3AF] hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
                         >
@@ -147,8 +138,6 @@ export default function Sidebar() {
                     </div>
                 </div>
             </motion.aside>
-
-            <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
         </>
     );
 }
