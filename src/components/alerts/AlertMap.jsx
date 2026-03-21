@@ -29,7 +29,7 @@ export default function AlertMap({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="rounded-lg overflow-hidden border border-farm-border h-[500px] md:h-[600px] relative z-0"
+            className="rounded-lg overflow-hidden border border-fm-border h-[500px] md:h-[600px] relative z-0"
         >
             <MapContainer
                 center={center}

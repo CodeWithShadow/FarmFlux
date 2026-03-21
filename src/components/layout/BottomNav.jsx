@@ -82,7 +82,7 @@ export default function BottomNav() {
                             animate={{ y: 0 }}
                             exit={{ y: '100%' }}
                             transition={{ type: 'spring', stiffness: 350, damping: 32 }}
-                            className="fixed bottom-[56px] left-0 right-0 z-50 md:hidden bg-farm-bg-secondary/98 backdrop-blur-xl border-t border-farm-border rounded-t-2xl overflow-hidden"
+                            className="fixed bottom-[56px] left-0 right-0 z-50 md:hidden bg-farm-bg-secondary/98 backdrop-blur-xl border-t border-fm-border rounded-t-2xl overflow-hidden"
                         >
                             {/* Drawer Handle */}
                             <div className="flex justify-center pt-3 pb-1">
@@ -91,12 +91,12 @@ export default function BottomNav() {
 
                             {/* Drawer Header */}
                             <div className="flex items-center justify-between px-5 pb-3">
-                                <h3 className="text-sm font-semibold text-farm-text tracking-wide">More Options</h3>
+                                <h3 className="text-sm font-semibold text-fm-text-primary tracking-wide">More Options</h3>
                                 <button
                                     onClick={() => setDrawerOpen(false)}
                                     className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
                                 >
-                                    <X className="w-4 h-4 text-farm-text-muted" />
+                                    <X className="w-4 h-4 text-fm-text-muted" />
                                 </button>
                             </div>
 
@@ -117,7 +117,7 @@ export default function BottomNav() {
                                                         onClick={() => handleDrawerNav(item.path)}
                                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                                                             isActive
-                                                                ? 'bg-farm-accent/10 text-farm-accent'
+                                                                ? 'bg-farm-accent/10 text-fm-accent'
                                                                 : 'text-[#9CA3AF] hover:bg-white/5 hover:text-gray-200'
                                                         }`}
                                                     >
@@ -151,7 +151,7 @@ export default function BottomNav() {
                 initial={{ y: 100 }}
                 animate={{ y: 0 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-farm-bg-secondary/95 backdrop-blur-lg border-t border-farm-border"
+                className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-farm-bg-secondary/95 backdrop-blur-lg border-t border-fm-border"
             >
                 <div className="flex items-center justify-around px-2 py-1">
                     {primaryNavItems.map((item) => {
@@ -169,19 +169,19 @@ export default function BottomNav() {
                                     className="relative"
                                 >
                                     <Icon
-                                        className={`w-5 h-5 transition-colors ${isActive ? 'text-farm-accent' : 'text-farm-text-muted'
+                                        className={`w-5 h-5 transition-colors ${isActive ? 'text-fm-accent' : 'text-fm-text-muted'
                                             }`}
                                     />
                                     {isActive && (
                                         <motion.div
                                             layoutId="bottomnav-active"
-                                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-farm-accent"
+                                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-fm-accent"
                                             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                                         />
                                     )}
                                 </motion.div>
                                 <span
-                                    className={`text-[10px] mt-1 font-medium transition-colors ${isActive ? 'text-farm-accent' : 'text-farm-text-muted'
+                                    className={`text-[10px] mt-1 font-medium transition-colors ${isActive ? 'text-fm-accent' : 'text-fm-text-muted'
                                         }`}
                                 >
                                     {item.label}
@@ -201,18 +201,18 @@ export default function BottomNav() {
                         >
                             <Menu
                                 className={`w-5 h-5 transition-colors ${
-                                    drawerOpen || isMoreActive ? 'text-farm-accent' : 'text-farm-text-muted'
+                                    drawerOpen || isMoreActive ? 'text-fm-accent' : 'text-fm-text-muted'
                                 }`}
                             />
                             {isMoreActive && !drawerOpen && (
                                 <motion.div
-                                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-farm-accent"
+                                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-fm-accent"
                                 />
                             )}
                         </motion.div>
                         <span
                             className={`text-[10px] mt-1 font-medium transition-colors ${
-                                drawerOpen || isMoreActive ? 'text-farm-accent' : 'text-farm-text-muted'
+                                drawerOpen || isMoreActive ? 'text-fm-accent' : 'text-fm-text-muted'
                             }`}
                         >
                             More

@@ -40,7 +40,7 @@ function AppLayout({ children }) {
     }, []);
 
     return (
-        <div className="flex min-h-screen bg-farm-bg">
+        <div className="flex min-h-screen bg-fm-bg-base">
             {/* Sidebar — desktop only */}
             {!isMobile && <Sidebar />}
 

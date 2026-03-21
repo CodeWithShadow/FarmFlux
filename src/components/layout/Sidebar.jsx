@@ -54,15 +54,15 @@ export default function Sidebar() {
                 initial={{ x: -280 }}
                 animate={{ x: sidebarOpen ? 0 : -280 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="fixed left-0 top-0 h-full w-[260px] bg-farm-bg border-r border-farm-border z-40 flex flex-col font-sans"
+                className="fixed left-0 top-0 h-full w-[260px] bg-fm-bg-base border-r border-fm-border z-40 flex flex-col font-sans"
             >
                 {/* Logo */}
                 <div className="px-6 pt-8 pb-6 flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-farm-accent/10 flex items-center justify-center">
-                        <Leaf className="w-5 h-5 text-farm-accent" strokeWidth={1.5} />
+                        <Leaf className="w-5 h-5 text-fm-accent" strokeWidth={1.5} />
                     </div>
                     <div>
-                        <h1 className="font-semibold text-lg text-farm-text tracking-tight">FarmFlux</h1>
+                        <h1 className="font-semibold text-lg text-fm-text-primary tracking-tight">FarmFlux</h1>
                     </div>
                 </div>
 
@@ -87,13 +87,13 @@ export default function Sidebar() {
                                             <div
                                                 className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all relative ${
                                                     isActive
-                                                        ? 'bg-farm-accent/10 text-farm-accent'
+                                                        ? 'bg-farm-accent/10 text-fm-accent'
                                                         : 'text-[#9CA3AF] hover:bg-white/5 hover:text-gray-200'
                                                 }`}
                                             >
                                                 {/* Active Left Border Accent */}
                                                 {isActive && (
-                                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-farm-accent rounded-r-full" />
+                                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-fm-accent rounded-r-full" />
                                                 )}
                                                 
                                                 <Icon className="w-[18px] h-[18px] flex-shrink-0" strokeWidth={1.5} />
@@ -108,13 +108,13 @@ export default function Sidebar() {
                 </nav>
 
                 {/* User / Settings Footer Layout */}
-                <div className="p-4 border-t border-white/5 bg-farm-bg">
+                <div className="p-4 border-t border-white/5 bg-fm-bg-base">
                     {/* User Profile Block */}
                     <div className="flex items-center gap-3 px-2 mb-4">
                         {user?.user_metadata?.avatar_url ? (
                             <img src={user.user_metadata.avatar_url} alt="" className="w-9 h-9 rounded-full border border-white/10" />
                         ) : (
-                            <div className="w-9 h-9 rounded-full bg-farm-card border border-farm-border flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-full bg-fm-bg-elevated border border-fm-border flex items-center justify-center">
                                 <User className="w-4 h-4 text-[#9CA3AF]" strokeWidth={1.5} />
                             </div>
                         )}
@@ -131,7 +131,7 @@ export default function Sidebar() {
                         <NavLink
                             to="/profile"
                             className={({ isActive }) => `block w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                                isActive ? 'bg-farm-accent/10 text-farm-accent' : 'text-[#9CA3AF] hover:text-gray-200 hover:bg-white/5'
+                                isActive ? 'bg-farm-accent/10 text-fm-accent' : 'text-[#9CA3AF] hover:text-gray-200 hover:bg-white/5'
                             }`}
                         >
                             <User className="w-[16px] h-[16px]" strokeWidth={1.5} />

@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
     // Block app rendering until we establish initial auth state
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-farm-bg">
+            <div className="min-h-screen flex items-center justify-center bg-fm-bg-base">
                 <LoadingSpinner text="Authenticating..." size="lg" />
             </div>
         );

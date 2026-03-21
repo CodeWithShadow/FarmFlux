@@ -4,20 +4,20 @@ export default {
     theme: {
         extend: {
             colors: {
-                farm: {
-                    bg: '#0A1A0F',
-                    'bg-secondary': '#0F2318',
-                    card: '#112A1A',
-                    accent: '#4ADE80',
-                    'accent-secondary': '#86EFAC',
-                    warm: '#FCD34D',
-                    earth: '#92400E',
-                    text: '#F0FDF4',
-                    'text-secondary': '#86EFAC',
-                    'text-muted': 'rgba(74, 222, 128, 0.53)',
-                    border: '#1A3A25',
-                    danger: '#EF4444',
-                    warning: '#F59E0B',
+                fm: {
+                    'bg-base':        '#EFF5F0',
+                    'bg-surface':     '#E2EEE4',
+                    'bg-elevated':    '#CDE3CF',
+                    'bg-subtle':      '#B8D9BC',
+                    'accent':         '#22623A',
+                    'accent-hover':   '#1A4D2D',
+                    'accent-deep':    '#0F3D1E',
+                    'accent-muted':   '#C8E4D4',
+                    'text-primary':   '#1A3020',
+                    'text-secondary': '#5A7A62',
+                    'text-muted':     '#8AA88E',
+                    'border':         '#C8DEC9',
+                    'border-strong':  '#A8C8AB',
                 }
             },
             fontFamily: {

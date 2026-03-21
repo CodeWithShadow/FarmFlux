@@ -125,6 +125,7 @@ export default function DiseaseAlerts() {
         }
     };
 
+<<<<<<< Updated upstream
     // Filter alerts by timeline date range
     const filteredAlerts = diseaseAlerts.filter((alert) => {
         if (!dateRange.startDate || !dateRange.endDate) return true;
@@ -135,17 +136,22 @@ export default function DiseaseAlerts() {
 
     const inputClass = "w-full px-4 py-3 bg-farm-bg border border-farm-border rounded-lg text-farm-text font-dm text-sm input-animated";
     const labelClass = "text-xs text-farm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
+=======
+    const inputClass = "w-full px-4 py-3 bg-fm-bg-base border border-fm-border rounded-lg text-fm-text-primary font-dm text-sm input-animated";
+    const labelClass = "text-xs text-fm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
+>>>>>>> Stashed changes
 
     return (
         <PageWrapper>
             <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-6xl mx-auto space-y-6">
                 <motion.div variants={staggerItem} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                     <div>
-                        <p className="text-sm text-farm-text-muted font-mono uppercase tracking-widest">Community</p>
-                        <h1 className="font-syne font-extrabold text-4xl md:text-5xl text-farm-text">
-                            Disease<br /><span className="text-farm-warning">Alerts</span>
+                        <p className="text-sm text-fm-text-muted font-mono uppercase tracking-widest">Community</p>
+                        <h1 className="font-syne font-extrabold text-4xl md:text-5xl text-fm-text-primary">
+                            Disease<br /><span className="text-fm-stat-crops">Alerts</span>
                         </h1>
                     </div>
+<<<<<<< Updated upstream
                     <div className="flex items-center gap-3">
                         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                             onClick={() => setShowRadiusSettings(true)}
@@ -159,20 +165,27 @@ export default function DiseaseAlerts() {
                             <Plus className="w-5 h-5" />Report Disease
                         </motion.button>
                     </div>
+=======
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowForm(true)}
+                        className="flex items-center gap-2 px-6 py-3 bg-fm-stat-crops text-fm-bg-base font-syne font-bold rounded-lg">
+                        <Plus className="w-5 h-5" />Report Disease
+                    </motion.button>
+>>>>>>> Stashed changes
                 </motion.div>
 
                 {/* Filters */}
                 <motion.div variants={staggerItem} className="flex flex-wrap gap-3 items-center">
-                    <Filter className="w-4 h-4 text-farm-text-muted" />
+                    <Filter className="w-4 h-4 text-fm-text-muted" />
                     <select value={filters.severity} onChange={(e) => setFilters((p) => ({ ...p, severity: e.target.value }))}
-                        className="px-3 py-2 bg-farm-card border border-farm-border rounded-lg text-sm text-farm-text font-dm">
+                        className="px-3 py-2 bg-fm-bg-elevated border border-fm-border rounded-lg text-sm text-fm-text-primary font-dm">
                         <option value="">All Severities</option>
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high">High</option>
                     </select>
                     <motion.button whileTap={{ scale: 0.95 }} onClick={loadAlerts}
-                        className="px-4 py-2 bg-farm-card border border-farm-border rounded-lg text-sm text-farm-text hover:border-farm-accent transition-colors">
+                        className="px-4 py-2 bg-fm-bg-elevated border border-fm-border rounded-lg text-sm text-fm-text-primary hover:border-fm-accent transition-colors">
                         Apply
                     </motion.button>
                 </motion.div>
@@ -195,29 +208,34 @@ export default function DiseaseAlerts() {
                 )}
 
                 {/* Alert Count */}
+<<<<<<< Updated upstream
                 <motion.div variants={staggerItem} className="text-sm text-farm-text-muted font-mono">
                     {filteredAlerts.length} alert{filteredAlerts.length !== 1 ? 's' : ''} shown
                     {filteredAlerts.length !== diseaseAlerts.length && (
                         <span className="text-farm-text-secondary"> (of {diseaseAlerts.length} total)</span>
                     )}
+=======
+                <motion.div variants={staggerItem} className="text-sm text-fm-text-muted font-mono">
+                    {diseaseAlerts.length} alert{diseaseAlerts.length !== 1 ? 's' : ''} reported
+>>>>>>> Stashed changes
                 </motion.div>
 
                 {/* Selected Alert Detail */}
                 <AnimatePresence>
                     {selectedAlert && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-                            className="bg-farm-card border-l-4 border-farm-warning p-6 rounded-r-lg">
+                            className="bg-fm-bg-elevated border-l-4 border-fm-stat-crops p-6 rounded-r-lg">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="font-syne font-bold text-xl text-farm-text">{selectedAlert.disease_name}</h3>
-                                    <p className="text-sm text-farm-text-secondary mt-1">Crop: {selectedAlert.crop_name}</p>
+                                    <h3 className="font-syne font-bold text-xl text-fm-text-primary">{selectedAlert.disease_name}</h3>
+                                    <p className="text-sm text-fm-text-secondary mt-1">Crop: {selectedAlert.crop_name}</p>
                                     <div className="flex items-center gap-4 mt-1">
-                                        <p className="text-xs text-farm-text-muted">Reported by {selectedAlert.reporter_name}</p>
+                                        <p className="text-xs text-fm-text-muted">Reported by {selectedAlert.reporter_name}</p>
                                         {user?.id === selectedAlert.user_id && (
                                             <button 
                                                 onClick={handleDeleteAlert} 
                                                 disabled={deleting}
-                                                className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-farm-danger hover:bg-farm-danger hover:text-farm-bg transition-colors disabled:opacity-50"
+                                                className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-fm-stat-disease hover:bg-fm-stat-disease hover:text-fm-bg-base transition-colors disabled:opacity-50"
                                             >
                                                 {deleting ? 'Deleting...' : 'Delete'}
                                             </button>
@@ -225,10 +243,10 @@ export default function DiseaseAlerts() {
                                     </div>
                                 </div>
                                 <button onClick={() => setSelectedAlert(null)}>
-                                    <X className="w-5 h-5 text-farm-text-muted" />
+                                    <X className="w-5 h-5 text-fm-text-muted" />
                                 </button>
                             </div>
-                            {selectedAlert.description && <p className="text-sm text-farm-text-secondary mt-3">{selectedAlert.description}</p>}
+                            {selectedAlert.description && <p className="text-sm text-fm-text-secondary mt-3">{selectedAlert.description}</p>}
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -240,11 +258,11 @@ export default function DiseaseAlerts() {
                             className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                             onClick={() => setShowForm(false)}>
                             <motion.div initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9 }}
-                                className="bg-farm-bg-secondary border border-farm-border rounded-xl p-6 w-full max-w-lg"
+                                className="bg-fm-bg-surface border border-fm-border rounded-xl p-6 w-full max-w-lg"
                                 onClick={(e) => e.stopPropagation()}>
                                 <div className="flex items-center justify-between mb-6">
-                                    <h2 className="font-syne font-bold text-xl text-farm-text">Report Disease Alert</h2>
-                                    <button onClick={() => setShowForm(false)}><X className="w-5 h-5 text-farm-text-muted" /></button>
+                                    <h2 className="font-syne font-bold text-xl text-fm-text-primary">Report Disease Alert</h2>
+                                    <button onClick={() => setShowForm(false)}><X className="w-5 h-5 text-fm-text-muted" /></button>
                                 </div>
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div><label className={labelClass}>Disease</label>
@@ -276,7 +294,7 @@ export default function DiseaseAlerts() {
                                         <textarea value={form.description} onChange={(e) => handleChange('description', e.target.value)} rows={3} className={inputClass} />
                                     </div>
                                     <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={submitting}
-                                        className="w-full py-3 bg-farm-warning text-farm-bg font-syne font-bold rounded-lg disabled:opacity-50">
+                                        className="w-full py-3 bg-fm-stat-crops text-fm-bg-base font-syne font-bold rounded-lg disabled:opacity-50">
                                         {submitting ? 'Reporting...' : 'Submit Report'}
                                     </motion.button>
                                 </form>

@@ -36,7 +36,7 @@ export default function TopBar() {
             case 'weather': return <CloudLightning className="w-5 h-5 text-[#60A5FA]" />;
             case 'buy': return <ShoppingBag className="w-5 h-5 text-[#FCD34D]" />;
             case 'sell': return <ShoppingBag className="w-5 h-5 text-[#4ADE80]" />;
-            default: return <Bell className="w-5 h-5 text-farm-text-secondary" />;
+            default: return <Bell className="w-5 h-5 text-fm-text-secondary" />;
         }
     };
 
@@ -45,16 +45,16 @@ export default function TopBar() {
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="sticky top-0 z-40 h-16 flex items-center justify-between px-4 md:px-8 bg-farm-bg/80 backdrop-blur-xl border-b border-farm-border"
+            className="sticky top-0 z-40 h-16 flex items-center justify-between px-4 md:px-8 bg-farm-bg/80 backdrop-blur-xl border-b border-fm-border"
         >
             <div className="flex items-center gap-4">
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={toggleSidebar}
-                    className="hidden md:flex items-center justify-center w-9 h-9 rounded-lg hover:bg-farm-card transition-colors"
+                    className="hidden md:flex items-center justify-center w-9 h-9 rounded-lg hover:bg-fm-bg-elevated transition-colors"
                 >
-                    <Menu className="w-5 h-5 text-farm-text-secondary" />
+                    <Menu className="w-5 h-5 text-fm-text-secondary" />
                 </motion.button>
             </div>
 
@@ -64,8 +64,8 @@ export default function TopBar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono ${isOnline
-                            ? 'bg-farm-accent/10 text-farm-accent'
-                            : 'bg-farm-warning/10 text-farm-warning'
+                            ? 'bg-farm-accent/10 text-fm-accent'
+                            : 'bg-farm-warning/10 text-fm-stat-crops'
                         }`}
                 >
                     {isOnline ? (
@@ -82,11 +82,11 @@ export default function TopBar() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={handleBellClick}
-                        className={`relative w-9 h-9 rounded-lg flex items-center justify-center hover:bg-farm-card transition-colors ${showNotifs ? 'bg-farm-card' : ''}`}
+                        className={`relative w-9 h-9 rounded-lg flex items-center justify-center hover:bg-fm-bg-elevated transition-colors ${showNotifs ? 'bg-fm-bg-elevated' : ''}`}
                     >
-                        <Bell className="w-5 h-5 text-farm-text-secondary" />
+                        <Bell className="w-5 h-5 text-fm-text-secondary" />
                         {unreadCount > 0 && (
-                            <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-farm-accent border-2 border-farm-bg flex items-center justify-center">
+                            <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-fm-accent border-2 border-fm-bg-base flex items-center justify-center">
                                 {/* Optional: tiny dot */}
                             </span>
                         )}
@@ -100,15 +100,15 @@ export default function TopBar() {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute right-0 mt-2 w-80 bg-farm-bg/95 backdrop-blur-xl border border-farm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col"
+                                className="absolute right-0 mt-2 w-80 bg-farm-bg/95 backdrop-blur-xl border border-fm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col"
                             >
-                                <div className="px-4 py-3 border-b border-farm-border flex items-center justify-between bg-farm-card/50">
-                                    <h3 className="font-syne font-bold text-farm-text">Notifications</h3>
-                                    {unreadCount > 0 && <span className="text-xs bg-farm-accent/20 text-farm-accent px-2 py-0.5 rounded-full font-mono">{unreadCount} new</span>}
+                                <div className="px-4 py-3 border-b border-fm-border flex items-center justify-between bg-farm-card/50">
+                                    <h3 className="font-syne font-bold text-fm-text-primary">Notifications</h3>
+                                    {unreadCount > 0 && <span className="text-xs bg-farm-accent/20 text-fm-accent px-2 py-0.5 rounded-full font-mono">{unreadCount} new</span>}
                                 </div>
                                 <div className="max-h-[70vh] overflow-y-auto no-scrollbar">
                                     {notifications.length === 0 ? (
-                                        <div className="p-6 text-center text-farm-text-muted text-sm font-dm">
+                                        <div className="p-6 text-center text-fm-text-muted text-sm font-dm">
                                             No notifications yet
                                         </div>
                                     ) : (
@@ -118,9 +118,9 @@ export default function TopBar() {
                                                     {getIcon(notif.type)}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-farm-text mb-0.5">{notif.title}</p>
-                                                    <p className="text-xs text-farm-text-secondary font-dm line-clamp-2">{notif.message}</p>
-                                                    <p className="text-[10px] text-farm-text-muted font-mono mt-1.5">
+                                                    <p className="text-sm font-medium text-fm-text-primary mb-0.5">{notif.title}</p>
+                                                    <p className="text-xs text-fm-text-secondary font-dm line-clamp-2">{notif.message}</p>
+                                                    <p className="text-[10px] text-fm-text-muted font-mono mt-1.5">
                                                         {new Date(notif.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                 </div>
@@ -153,7 +153,7 @@ export default function TopBar() {
                     {user?.user_metadata?.avatar_url ? (
                         <img src={user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                        <div className="w-full h-full bg-farm-accent/20 flex items-center justify-center text-farm-accent text-sm font-bold">
+                        <div className="w-full h-full bg-farm-accent/20 flex items-center justify-center text-fm-accent text-sm font-bold">
                             {user?.user_metadata?.full_name?.[0] || 'F'}
                         </div>
                     )}
