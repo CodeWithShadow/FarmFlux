@@ -82,11 +82,11 @@ export default function BottomNav() {
                             animate={{ y: 0 }}
                             exit={{ y: '100%' }}
                             transition={{ type: 'spring', stiffness: 350, damping: 32 }}
-                            className="fixed bottom-[56px] left-0 right-0 z-50 md:hidden bg-fm-bg-surface/98 backdrop-blur-xl border-t border-fm-border rounded-t-2xl overflow-hidden"
+                            className="fixed bottom-[56px] left-0 right-0 z-50 md:hidden bg-black/80 backdrop-blur-xl border-t border-white/10 rounded-t-2xl overflow-hidden"
                         >
                             {/* Drawer Handle */}
                             <div className="flex justify-center pt-3 pb-1">
-                                <div className="w-10 h-1 rounded-full bg-fm-border-strong" />
+                                <div className="w-10 h-1 rounded-full bg-white/20" />
                             </div>
 
                             {/* Drawer Header */}
@@ -96,7 +96,7 @@ export default function BottomNav() {
                                     onClick={() => setDrawerOpen(false)}
                                     className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
                                 >
-                                    <X className="w-4 h-4 text-fm-text-secondary" />
+                                    <X className="w-4 h-4 text-white/70" />
                                 </button>
                             </div>
 
@@ -104,7 +104,7 @@ export default function BottomNav() {
                             <nav className="px-4 pb-4 max-h-[50vh] overflow-y-auto">
                                 {moreMenuGroups.map((group, idx) => (
                                     <div key={group.title} className={idx > 0 ? 'mt-4' : ''}>
-                                        <h4 className="text-[10px] font-semibold text-fm-text-primary uppercase tracking-wider mb-1.5 px-3">
+                                        <h4 className="text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-1.5 px-3">
                                             {group.title}
                                         </h4>
                                         <div className="space-y-0.5">
@@ -117,8 +117,8 @@ export default function BottomNav() {
                                                         onClick={() => handleDrawerNav(item.path)}
                                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                                                             isActive
-                                                                ? 'bg-fm-accent/10 text-fm-accent'
-                                                                : 'text-fm-text-primary hover:bg-black/5'
+                                                                ? 'bg-white/20 text-white font-bold'
+                                                                : 'text-white/80 hover:bg-white/10 hover:text-white'
                                                         }`}
                                                     >
                                                         <Icon className="w-[18px] h-[18px] flex-shrink-0" strokeWidth={1.5} />
@@ -131,10 +131,10 @@ export default function BottomNav() {
                                 ))}
 
                                 {/* Sign Out */}
-                                <div className="mt-4 pt-3 border-t border-fm-border">
+                                <div className="mt-4 pt-3 border-t border-white/10">
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-fm-text-primary hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-white/80 hover:text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                                     >
                                         <LogOut className="w-[18px] h-[18px]" strokeWidth={1.5} />
                                         <span>Sign Out</span>
@@ -169,7 +169,7 @@ export default function BottomNav() {
                                     className="relative"
                                 >
                                     <Icon
-                                        className={`w-5 h-5 transition-colors ${isActive ? 'text-fm-accent' : 'text-fm-text-secondary'
+                                        className={`w-5 h-5 transition-colors ${isActive ? (drawerOpen ? 'text-white' : 'text-fm-accent') : (drawerOpen ? 'text-white/70' : 'text-fm-text-secondary')
                                             }`}
                                     />
                                     {isActive && (
@@ -181,7 +181,7 @@ export default function BottomNav() {
                                     )}
                                 </motion.div>
                                 <span
-                                    className={`text-[10px] mt-1 font-medium transition-colors ${isActive ? 'text-fm-accent' : 'text-fm-text-secondary'
+                                    className={`text-[10px] mt-1 font-medium transition-colors ${isActive ? (drawerOpen ? 'text-white' : 'text-fm-accent') : (drawerOpen ? 'text-white/70' : 'text-fm-text-secondary')
                                         }`}
                                 >
                                     {item.label}
@@ -201,7 +201,7 @@ export default function BottomNav() {
                         >
                             <Menu
                                 className={`w-5 h-5 transition-colors ${
-                                    drawerOpen || isMoreActive ? 'text-fm-accent' : 'text-fm-text-secondary'
+                                    drawerOpen ? 'text-white' : (isMoreActive ? 'text-fm-accent' : 'text-fm-text-secondary')
                                 }`}
                             />
                             {isMoreActive && !drawerOpen && (
@@ -212,7 +212,7 @@ export default function BottomNav() {
                         </motion.div>
                         <span
                             className={`text-[10px] mt-1 font-medium transition-colors ${
-                                drawerOpen || isMoreActive ? 'text-fm-accent' : 'text-fm-text-secondary'
+                                drawerOpen ? 'text-white' : (isMoreActive ? 'text-fm-accent' : 'text-fm-text-secondary')
                             }`}
                         >
                             More
