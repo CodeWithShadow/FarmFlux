@@ -128,6 +128,15 @@ export default function Sidebar() {
 
                     {/* Secondary Actions tightly grouped below user */}
                     <div className="space-y-0.5">
+                        <NavLink
+                            to="/profile"
+                            className={({ isActive }) => `block w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                                isActive ? 'bg-farm-accent/10 text-farm-accent' : 'text-[#9CA3AF] hover:text-gray-200 hover:bg-white/5'
+                            }`}
+                        >
+                            <User className="w-[16px] h-[16px]" strokeWidth={1.5} />
+                            <span>Profile</span>
+                        </NavLink>
                         <button
                             onClick={handleLogout}
                             className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#9CA3AF] hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
