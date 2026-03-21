@@ -1,81 +1,143 @@
-import React, { useEffect, useMemo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { signInWithGoogle } from '../services/supabase';
 import useStore from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Droplets, Bug, Sprout, ShieldAlert, BarChart3, CloudLightning, ShieldCheck, Zap, ArrowRight, ShoppingCart } from 'lucide-react';
+import { Leaf, Droplets, Bug, Sprout, BarChart3, CloudLightning, ShieldAlert, Zap, ArrowRight, ShoppingCart, Activity, ShieldCheck, Cpu } from 'lucide-react';
 
-/* Floating particles for the Hero Section */
-function Particles() {
-    const particles = useMemo(() =>
-        Array.from({ length: 40 }, (_, i) => ({
-            id: i,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            size: Math.random() * 4 + 2,
-            duration: Math.random() * 10 + 10,
-            delay: Math.random() * 5,
-        })), []
-    );
+/* Distinct Theme Colors for Landing Page Only */
+const THEME = {
+    bg: "from-[#061810] via-[#0A2E1A] to-[#041208]",
+    accent: "text-[#4ADE80]",
+    accentBg: "bg-[#4ADE80]",
+    card: "bg-[#0c311c]/60",
+    border: "border-[#4ADE80]/20"
+};
 
+/* Floating Abstract Blobs */
+function FloatingBlobs() {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {particles.map((p) => (
-                <motion.div
-                    key={p.id}
-                    className="particle bg-farm-accent/30 rounded-full absolute"
-                    style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-                    animate={{ y: [0, -30, 10, -20, 0], x: [0, 15, -10, 5, 0], opacity: [0.2, 0.5, 0.3, 0.6, 0.2] }}
-                    transition={{ duration: p.duration, repeat: Infinity, delay: p.delay, ease: 'easeInOut' }}
-                />
-            ))}
+            <motion.div 
+                animate={{ rotate: 360, scale: [1, 1.2, 1], x: [0, 50, 0], y: [0, -30, 0] }}
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                className="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-gradient-radial from-[#4ADE80]/10 to-transparent blur-3xl mix-blend-screen"
+            />
+            <motion.div 
+                animate={{ rotate: -360, scale: [1, 1.3, 1], x: [0, -40, 0], y: [0, 60, 0] }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="absolute top-[40%] -right-[20%] w-[60vw] h-[60vw] rounded-full bg-gradient-radial from-[#10B981]/10 to-transparent blur-3xl mix-blend-screen"
+            />
+        </div>
+    );
+}
+
+/* Floating UI Objects (Parallax) */
+function FloatingObjects({ scrollY }) {
+    const y1 = useTransform(scrollY, [0, 1000], [0, -200]);
+    const y2 = useTransform(scrollY, [0, 1000], [0, -400]);
+    const y3 = useTransform(scrollY, [0, 1000], [0, -150]);
+    
+    // Smooth the parallax
+    const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 });
+    const smoothY2 = useSpring(y2, { stiffness: 100, damping: 30 });
+    const smoothY3 = useSpring(y3, { stiffness: 100, damping: 30 });
+
+    return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block z-0">
+            {/* Health Status Card Floating */}
+            <motion.div 
+                style={{ y: smoothY1 }}
+                animate={{ y: [0, -20, 0], rotate: [ -5, 5, -5 ] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                className={`absolute top-[20%] left-[10%] p-4 rounded-2xl ${THEME.card} ${THEME.border} backdrop-blur-md shadow-2xl flex items-center gap-3`}
+            >
+                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <Activity className="w-5 h-5 text-green-400" />
+                </div>
+                <div>
+                    <p className="text-xs text-white/50 font-mono">Crop Health</p>
+                    <p className="text-sm font-bold text-white">98% Optimal</p>
+                </div>
+            </motion.div>
+
+            {/* Disease Alert Floating */}
+            <motion.div 
+                style={{ y: smoothY2 }}
+                animate={{ y: [0, 30, 0], rotate: [ 5, -5, 5 ] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className={`absolute top-[45%] right-[8%] p-4 rounded-2xl ${THEME.card} border border-red-500/30 backdrop-blur-md shadow-2xl flex items-center gap-3`}
+            >
+                <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <Bug className="w-5 h-5 text-red-500" />
+                </div>
+                <div>
+                    <p className="text-xs text-white/50 font-mono">AI Detection</p>
+                    <p className="text-sm font-bold text-white">Leaf Rust Found</p>
+                </div>
+            </motion.div>
+
+            {/* Irrigation Floating */}
+            <motion.div 
+                style={{ y: smoothY3 }}
+                animate={{ y: [0, -15, 0], scale: [1, 1.05, 1] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                className={`absolute bottom-[10%] left-[20%] p-4 rounded-2xl ${THEME.card} ${THEME.border} backdrop-blur-md shadow-2xl flex items-center gap-3`}
+            >
+                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Droplets className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                    <p className="text-xs text-white/50 font-mono">Smart Irrigation</p>
+                    <p className="text-sm font-bold text-white">Saved 450L Today</p>
+                </div>
+            </motion.div>
         </div>
     );
 }
 
 const stats = [
-    { value: "30%", label: "Global crop loss due to unchecked diseases & pests annually.", icon: Bug, color: "text-farm-danger" },
-    { value: "70%", label: "Of the world's freshwater is used for agriculture, often inefficiently.", icon: Droplets, color: "text-blue-400" },
-    { value: "40%", label: "Of farmers lack access to accurate market pricing and weather data.", icon: BarChart3, color: "text-farm-warning" },
+    { value: "30%", label: "Global crop loss to unchecked diseases & pests.", icon: Bug, color: "text-red-400" },
+    { value: "70%", label: "Of world's freshwater used in agriculture.", icon: Droplets, color: "text-blue-400" },
+    { value: "40%", label: "Of farmers lack access to fair market pricing.", icon: BarChart3, color: "text-amber-400" },
 ];
 
 const features = [
     {
         title: "AI Disease Detection",
-        description: "Snap a photo of any distressed leaf. Our offline-capable AI models instantly identify diseases and provide actionable treatment plans.",
+        description: "Snap a photo of distressed leaves. Our edge AI models instantly identify diseases entirely offline.",
         icon: ShieldAlert,
-        color: "text-red-400",
-        bg: "bg-red-500/10"
+        color: "text-red-400"
     },
     {
-        title: "Smart Irrigation Planning",
-        description: "Save water and money. FarmFlux calculates precise irrigation schedules based on real-time weather forecasts and specific crop needs.",
+        title: "Hyperlocal Irrigation",
+        description: "Save water autonomously. Precision engineering calculates exact watering needs based on deep climate data.",
         icon: Droplets,
-        color: "text-blue-400",
-        bg: "bg-blue-500/10"
+        color: "text-blue-400"
     },
     {
-        title: "Soil Analysis",
-        description: "Understand your soil health without expensive lab tests. Upload soil images for instant pH and nutrient recommendations.",
+        title: "Deep Soil Analysis",
+        description: "Bypass the lab. Upload visual terrain data for instant pH and nutrient optimization mapping.",
         icon: Sprout,
-        color: "text-farm-accent",
-        bg: "bg-farm-accent/10"
+        color: "text-green-400"
     },
     {
-        title: "Peer-to-Peer Marketplace",
-        description: "Bypass the middlemen. Sell your surplus yield directly to buyers at fair, AI-suggested market rates.",
+        title: "AI-Powered Marketplace",
+        description: "Sell surplus directly. Algorithms suggest perfect market rates dynamically based on macro trends.",
         icon: ShoppingCart,
-        color: "text-purple-400",
-        bg: "bg-purple-500/10"
+        color: "text-purple-400"
     }
 ];
 
 export default function Login() {
     const { user } = useStore();
     const navigate = useNavigate();
-    const { scrollYProgress } = useScroll();
-    const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-    const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
+    const containerRef = useRef(null);
+    const { scrollY, scrollYProgress } = useScroll({ container: containerRef });
+    
+    // Parallax hero text
+    const textY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
+    const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
     useEffect(() => {
         if (user) navigate('/', { replace: true });
@@ -92,76 +154,84 @@ export default function Login() {
     const titleLetters = 'FarmFlux'.split('');
 
     return (
-        <div className="min-h-screen bg-farm-bg text-farm-text font-dm selection:bg-farm-accent/30 selection:text-farm-accent overflow-x-hidden">
-            
+        <div ref={containerRef} className={`h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b ${THEME.bg} text-white font-dm selection:bg-[#4ADE80]/30 selection:text-[#4ADE80]`}>
+            <FloatingBlobs />
+            <FloatingObjects scrollY={scrollY} />
+
             {/* Top Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between bg-farm-bg/70 backdrop-blur-xl border-b border-farm-border/50">
-                <div className="flex items-center gap-2">
-                    <Leaf className="w-5 h-5 text-farm-accent" />
-                    <span className="font-syne font-bold text-lg tracking-wide">FarmFlux</span>
+            <motion.nav 
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="fixed top-0 left-0 right-0 z-50 px-6 py-5 flex items-center justify-between bg-black/10 backdrop-blur-2xl border-b border-white/5"
+            >
+                <div className="flex items-center gap-2 group cursor-pointer">
+                    <motion.div whileHover={{ rotate: 180 }} transition={{ duration: 0.6 }}>
+                        <Leaf className={`w-6 h-6 ${THEME.accent}`} />
+                    </motion.div>
+                    <span className="font-syne font-bold text-xl tracking-wide text-white">FarmFlux</span>
                 </div>
                 <button 
                     onClick={handleLogin}
-                    className="px-5 py-2 rounded-full bg-farm-accent/10 text-farm-accent text-sm font-semibold hover:bg-farm-accent hover:text-farm-bg transition-colors"
+                    className={`px-6 py-2.5 rounded-full ${THEME.accentBg} text-black text-sm font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(74,222,128,0.3)] hover:shadow-[0_0_40px_rgba(74,222,128,0.6)]`}
                 >
                     Sign In
                 </button>
-            </nav>
+            </motion.nav>
 
-            {/* Hero Section */}
-            <motion.section 
-                style={{ opacity: heroOpacity, scale: heroScale }}
-                className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden gradient-mesh"
-            >
-                <Particles />
-
-                <div className="relative z-10 flex flex-col items-center px-6 max-w-4xl mx-auto text-center">
-                    {/* Logo Icon */}
+            {/* Heavy Hero Section */}
+            <section className="relative min-h-[110vh] flex flex-col items-center justify-center pt-24 px-6 overflow-hidden z-10">
+                <motion.div 
+                    style={{ y: textY, opacity: textOpacity }}
+                    className="flex flex-col items-center text-center max-w-5xl mx-auto"
+                >
                     <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-                        className="w-20 h-20 rounded-2xl bg-farm-accent/10 border border-farm-accent/30 flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(74,222,128,0.2)]"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${THEME.card} ${THEME.border} mb-8 backdrop-blur-md`}
                     >
-                        <Leaf className="w-10 h-10 text-farm-accent drop-shadow-lg" />
+                        <Zap className={`w-4 h-4 ${THEME.accent}`} />
+                        <span className="text-sm font-mono text-white/80">The future of intelligent agriculture is here.</span>
                     </motion.div>
 
-                    {/* Title */}
-                    <div className="flex items-center justify-center gap-[1px] mb-4 flex-wrap">
+                    {/* Massive Staggered Title */}
+                    <div className="flex items-center justify-center gap-[2px] mb-6 flex-wrap">
                         {titleLetters.map((letter, i) => (
                             <motion.span
                                 key={i}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 + i * 0.05, type: 'spring', stiffness: 300 }}
-                                className="font-syne font-black text-6xl md:text-8xl text-farm-text tracking-tight"
+                                initial={{ opacity: 0, y: 100, rotateX: 90 }}
+                                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                                transition={{ delay: 0.2 + (i * 0.08), type: "spring", stiffness: 120, damping: 15 }}
+                                className="font-syne font-black text-7xl md:text-[9rem] leading-none text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 tracking-tighter"
                             >
                                 {letter}
                             </motion.span>
                         ))}
                     </div>
 
-                    {/* Tagline */}
                     <motion.p
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.0 }}
-                        className="text-farm-text-secondary text-lg md:text-2xl font-dm mb-12 max-w-2xl font-light"
+                        transition={{ delay: 1, duration: 1 }}
+                        className="text-lg md:text-2xl font-light text-white/70 max-w-3xl mb-16 leading-relaxed"
                     >
-                        Intelligence rooted in the soil. Next-generation AI tools to maximize crop yield, minimize resource waste, and securely connect you to the market.
+                        Intelligence rooted in the soil. Next-generation edge AI tools to maximize crop yield, eliminate resource waste, and securely connect you to global markets.
                     </motion.p>
 
-                    {/* Glassmorphic Login Card */}
+                    {/* Glassmorphic Beautiful Login Box */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.2 }}
-                        className="p-1 rounded-2xl bg-gradient-to-b from-farm-border to-transparent"
+                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ delay: 1.3, type: "spring", stiffness: 200, damping: 20 }}
+                        className={`p-2 rounded-3xl bg-gradient-to-b from-white/10 to-transparent shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]`}
                     >
-                        <div className="bg-farm-bg-secondary/40 backdrop-blur-2xl rounded-xl p-6 sm:p-8 border border-farm-border/50 max-w-sm mx-auto shadow-2xl">
+                        <div className={`backdrop-blur-3xl rounded-[20px] p-8 md:p-10 border border-white/10 ${THEME.card} flex flex-col items-center relative overflow-hidden group`}>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                            <h3 className="text-xl font-syne font-bold text-white mb-6">Start your digital farm.</h3>
                             <button
                                 onClick={handleLogin}
-                                className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-syne font-bold text-lg rounded-lg hover:bg-gray-100 transition-colors shadow-lg active:scale-95"
+                                className="w-full sm:w-80 flex items-center justify-center gap-4 px-8 py-5 bg-white text-black font-syne font-bold text-lg rounded-xl hover:bg-gray-100 transition-all shadow-xl active:scale-[0.98]"
                             >
                                 <svg className="w-6 h-6" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -171,68 +241,54 @@ export default function Login() {
                                 </svg>
                                 Continue with Google
                             </button>
-                            <p className="text-xs text-farm-text-muted mt-5 text-center px-4 leading-relaxed">
-                                Join thousands of modern farmers optimizing their land with FarmFlux.
-                            </p>
                         </div>
                     </motion.div>
-                    
-                    {/* Scroll Indicator */}
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 2 }}
-                        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-farm-text-muted/50"
-                    >
-                        <span className="text-xs uppercase tracking-widest font-mono">Discover More</span>
-                        <motion.div 
-                            animate={{ y: [0, 10, 0] }} 
-                            transition={{ repeat: Infinity, duration: 2 }}
-                            className="w-[1px] h-10 bg-gradient-to-b from-farm-text-muted/50 to-transparent"
-                        />
-                    </motion.div>
-                </div>
-            </motion.section>
+                </motion.div>
+                
+                {/* Scroll Indicator */}
+                <motion.div 
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
+                    className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/30"
+                >
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-mono">Scroll</span>
+                    <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }} className="w-[1px] h-12 bg-gradient-to-b from-white/30 to-transparent" />
+                </motion.div>
+            </section>
 
-            {/* Problem Statement & Stats Section */}
-            <section className="py-24 sm:py-32 px-6 relative border-y border-farm-border/30 bg-farm-card/10">
-                <div className="max-w-6xl mx-auto">
+            {/* Heavy Stats Section */}
+            <section className="py-32 px-6 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-3xl">
+                <div className="max-w-7xl mx-auto">
                     <motion.div 
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-100px" }}
-                        variants={{
-                            hidden: { opacity: 0, y: 30 },
-                            visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
-                        }}
+                        initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}
                         className="text-center mb-20"
                     >
-                        <h2 className="font-syne font-bold text-3xl sm:text-5xl mb-6 text-farm-text">Farming is harder than ever.</h2>
-                        <p className="text-lg text-farm-text-secondary max-w-3xl mx-auto font-light leading-relaxed">
-                            Climate changes, unpredictable markets, and rising costs demand data-driven precision, not just intuition. The old ways are no longer enough to secure our food systems.
+                        <h2 className="font-syne font-black text-4xl md:text-6xl mb-6 text-white tracking-tight">The world has changed. <br/><span className="text-white/40">Farming must evolve.</span></h2>
+                        <p className="text-xl text-white/60 max-w-3xl mx-auto font-light leading-relaxed">
+                            Climate volatility and archaic supply chains are crushing yields. Intuition is no longer sufficient; survival demands extreme data precision.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                         {stats.map((stat, i) => {
                             const Icon = stat.icon;
                             return (
                                 <motion.div 
                                     key={i}
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true, margin: "-100px" }}
-                                    variants={{
-                                        hidden: { opacity: 0, y: 30 },
-                                        visible: { opacity: 1, y: 0, transition: { delay: i * 0.2, duration: 0.6 } }
-                                    }}
-                                    className="p-8 rounded-2xl bg-farm-bg-secondary/50 border border-farm-border text-center flex flex-col items-center"
+                                    initial={{ opacity: 0, scale: 0.8, rotateX: 45 }}
+                                    whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ delay: i * 0.2, type: "spring", stiffness: 100, damping: 20 }}
+                                    className={`p-10 rounded-3xl ${THEME.card} border border-white/5 text-center flex flex-col items-center relative overflow-hidden group`}
                                 >
-                                    <div className={`w-16 h-16 rounded-full bg-farm-bg border border-farm-border flex items-center justify-center mb-6 shadow-inner`}>
-                                        <Icon className={`w-8 h-8 ${stat.color}`} />
-                                    </div>
-                                    <h3 className="text-5xl font-syne font-black mb-4 text-farm-text">{stat.value}</h3>
-                                    <p className="text-farm-text-secondary font-dm text-sm leading-relaxed">{stat.label}</p>
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <motion.div 
+                                        whileHover={{ scale: 1.2, rotate: 10 }}
+                                        className={`w-20 h-20 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center mb-8 shadow-inner`}
+                                    >
+                                        <Icon className={`w-10 h-10 ${stat.color} drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]`} />
+                                    </motion.div>
+                                    <h3 className="text-6xl md:text-7xl font-syne font-black mb-6 text-white tracking-tighter">{stat.value}</h3>
+                                    <p className="text-white/60 font-dm text-base leading-relaxed tracking-wide">{stat.label}</p>
                                 </motion.div>
                             );
                         })}
@@ -240,45 +296,51 @@ export default function Login() {
                 </div>
             </section>
 
-            {/* Features Showcase Section */}
-            <section className="py-24 sm:py-32 px-6 relative">
-                <div className="max-w-6xl mx-auto">
+            {/* Huge Feature Grid Section */}
+            <section className="py-40 px-6 relative z-10 bg-gradient-to-b from-transparent to-black/80">
+                <div className="max-w-7xl mx-auto">
                     <motion.div 
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={{ hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } }}
-                        className="mb-16 md:mb-24"
+                        initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 1, type: "spring" }}
+                        className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8"
                     >
-                        <span className="text-farm-accent font-mono uppercase tracking-widest text-sm mb-4 block">The Solution</span>
-                        <h2 className="font-syne font-bold text-4xl sm:text-5xl text-farm-text max-w-2xl">
-                            Empowering agriculture with <span className="text-farm-accent">edge AI.</span>
-                        </h2>
+                        <div>
+                            <span className={`${THEME.accent} font-mono uppercase tracking-[0.2em] text-sm mb-6 block flex items-center gap-2`}><Cpu className="w-4 h-4"/> Deep Technology Edge</span>
+                            <h2 className="font-syne font-black text-5xl md:text-7xl text-white tracking-tighter">
+                                Farm intelligently.
+                            </h2>
+                        </div>
+                        <p className="text-white/50 max-w-md font-light text-lg">
+                            We bring silicon-valley grade artificial intelligence directly to the field. Completely offline. Brutally fast.
+                        </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                         {features.map((feature, i) => {
                             const Icon = feature.icon;
+                            // Alternating heights to create a masonry-like feel
+                            const heightClass = i % 3 === 0 ? "md:h-[450px]" : "md:h-[380px]";
                             return (
                                 <motion.div 
                                     key={i}
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true, margin: "-50px" }}
-                                    variants={{
-                                        hidden: { opacity: 0, y: 30 },
-                                        visible: { opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } }
-                                    }}
-                                    className="group p-8 sm:p-10 rounded-3xl bg-farm-card border border-farm-border hover:border-farm-accent/50 transition-colors duration-500 overflow-hidden relative"
+                                    initial={{ opacity: 0, y: 100 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-100px" }}
+                                    transition={{ delay: (i % 2) * 0.2, duration: 0.8, ease: "easeOut" }}
+                                    whileHover={{ y: -10, scale: 1.02 }}
+                                    className={`group p-10 sm:p-12 rounded-[2rem] ${THEME.card} border border-white/10 hover:border-white/30 transition-all duration-500 overflow-hidden relative flex flex-col justify-end ${heightClass}`}
                                 >
-                                    <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-radial ${feature.bg} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-3xl`} />
-                                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-8 bg-farm-bg border border-farm-border relative z-10`}>
-                                        <Icon className={`w-6 h-6 ${feature.color}`} />
+                                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-duration-700 pointer-events-none" />
+                                    
+                                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-auto bg-black border border-white/10 relative z-10 shadow-2xl group-hover:scale-110 transition-transform duration-500`}>
+                                        <Icon className={`w-8 h-8 ${feature.color}`} />
                                     </div>
-                                    <h3 className="text-2xl font-syne font-bold text-farm-text mb-4 relative z-10">{feature.title}</h3>
-                                    <p className="text-farm-text-secondary leading-relaxed relative z-10">
-                                        {feature.description}
-                                    </p>
+                                    
+                                    <div className="relative z-10 mt-12">
+                                        <h3 className="text-3xl font-syne font-black text-white mb-4 tracking-tight">{feature.title}</h3>
+                                        <p className="text-white/60 leading-relaxed font-light text-lg">
+                                            {feature.description}
+                                        </p>
+                                    </div>
                                 </motion.div>
                             );
                         })}
@@ -286,28 +348,30 @@ export default function Login() {
                 </div>
             </section>
 
-            {/* Bottom CTA */}
-            <section className="py-32 px-6 bg-farm-accent/5 border-t border-farm-border relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiM0QURFODAiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]" />
+            {/* Massive Bottom CTA */}
+            <section className="py-40 px-6 relative z-10 overflow-hidden bg-black flex items-center justify-center">
+                {/* Subtle background texture */}
+                <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zz4=')]" />
                 
                 <motion.div 
-                    initial="hidden"
-                    whileInView="visible"
+                    initial={{ opacity: 0, scale: 0.5, rotate: -5 }}
+                    whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
-                    variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } } }}
-                    className="max-w-2xl mx-auto text-center relative z-10"
+                    transition={{ duration: 1, type: "spring", stiffness: 100 }}
+                    className="max-w-4xl mx-auto text-center relative z-10 p-12 md:p-20 rounded-[3rem] border border-white/10 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-3xl"
                 >
-                    <h2 className="font-syne font-bold text-4xl sm:text-5xl text-farm-text mb-8">Ready to transform your farm?</h2>
+                    <h2 className="font-syne font-black text-5xl md:text-8xl text-white mb-10 tracking-tighter">Enter the flux.</h2>
                     <button
                         onClick={handleLogin}
-                        className="inline-flex items-center gap-2 px-8 py-4 bg-farm-accent text-farm-bg font-syne font-bold text-lg rounded-full hover:bg-farm-accent-secondary transition-colors shadow-[0_0_30px_rgba(74,222,128,0.3)] hover:shadow-[0_0_50px_rgba(74,222,128,0.5)] active:scale-95"
+                        className={`inline-flex items-center gap-4 px-10 py-6 ${THEME.accentBg} text-black font-syne font-black text-xl rounded-2xl hover:bg-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(74,222,128,0.4)]`}
                     >
-                        Start using FarmFlux  <ArrowRight className="w-5 h-5" />
+                        Sign In with Google <ArrowRight className="w-6 h-6" />
                     </button>
-                    <p className="text-sm text-farm-text-muted mt-6">Secure login via Google. No credit card required.</p>
+                    <p className="text-sm font-mono tracking-widest text-white/40 mt-10 uppercase">Security backed by Supabase.</p>
                 </motion.div>
             </section>
             
         </div>
     );
 }
+
