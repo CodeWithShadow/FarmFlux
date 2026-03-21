@@ -187,3 +187,122 @@
 /* ───── Hide scrollbar for carousels ───── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ───── Timeline Dual-Handle Range Slider ───── */
+.timeline-slider-container {
+  position: relative;
+  height: 28px;
+  width: 100%;
+}
+
+.timeline-slider-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: #1A3A25;
+  transform: translateY(-50%);
+}
+
+.timeline-slider-track {
+  position: absolute;
+  top: 50%;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #4ADE80, #22C55E);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.timeline-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-slider-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4ADE80;
+  border: 3px solid #0A1A0F;
+  cursor: pointer;
+  pointer-events: all;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.timeline-slider-thumb::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.5);
+}
+
+.timeline-slider-thumb::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4ADE80;
+  border: 3px solid #0A1A0F;
+  cursor: pointer;
+  pointer-events: all;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+}
+
+/* ───── Radius Settings Slider ───── */
+.radius-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #4ADE80, #22C55E);
+  outline: none;
+}
+
+.radius-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4ADE80;
+  border: 3px solid #0A1A0F;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.radius-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.55);
+}
+
+.radius-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4ADE80;
+  border: 3px solid #0A1A0F;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+}
+
+.radius-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #4ADE80, #22C55E);
+}

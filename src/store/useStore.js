@@ -84,6 +84,18 @@ const useStore = create((set, get) => ({
     setListings: (data) => set({ listings: data }),
     setMyListings: (data) => set({ myListings: data }),
 
+    // Alert Radius & Farm Location
+    alertRadius: parseInt(localStorage.getItem('farmflux_alert_radius')) || 30,
+    setAlertRadius: (km) => {
+        localStorage.setItem('farmflux_alert_radius', km.toString());
+        set({ alertRadius: km });
+    },
+    farmLocation: JSON.parse(localStorage.getItem('farmflux_farm_location') || 'null'),
+    setFarmLocation: (loc) => {
+        localStorage.setItem('farmflux_farm_location', JSON.stringify(loc));
+        set({ farmLocation: loc });
+    },
+
     // Alerts
     diseaseAlerts: [],
     setDiseaseAlerts: (data) => set({ diseaseAlerts: data }),
