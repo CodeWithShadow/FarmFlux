@@ -70,7 +70,7 @@ export default function Sidebar() {
                 <nav className="flex-1 px-4 overflow-y-auto no-scrollbar pb-6">
                     {navGroups.map((group, groupIdx) => (
                         <div key={group.title} className={groupIdx > 0 ? "mt-6" : ""}>
-                            <h3 className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wider mb-2 px-3">
+                            <h3 className="text-[11px] font-semibold text-fm-text-muted uppercase tracking-wider mb-2 px-3">
                                 {group.title}
                             </h3>
                             <div className="space-y-0.5">
@@ -88,7 +88,7 @@ export default function Sidebar() {
                                                 className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all relative ${
                                                     isActive
                                                         ? 'bg-farm-accent/10 text-fm-accent'
-                                                        : 'text-[#9CA3AF] hover:bg-white/5 hover:text-gray-200'
+                                                        : 'text-fm-text-secondary hover:bg-black/5 hover:text-fm-text-primary'
                                                 }`}
                                             >
                                                 {/* Active Left Border Accent */}
@@ -108,21 +108,21 @@ export default function Sidebar() {
                 </nav>
 
                 {/* User / Settings Footer Layout */}
-                <div className="p-4 border-t border-white/5 bg-fm-bg-base">
+                <div className="p-4 border-t border-fm-border bg-fm-bg-base">
                     {/* User Profile Block */}
                     <div className="flex items-center gap-3 px-2 mb-4">
                         {user?.user_metadata?.avatar_url ? (
                             <img src={user.user_metadata.avatar_url} alt="" className="w-9 h-9 rounded-full border border-white/10" />
                         ) : (
                             <div className="w-9 h-9 rounded-full bg-fm-bg-elevated border border-fm-border flex items-center justify-center">
-                                <User className="w-4 h-4 text-[#9CA3AF]" strokeWidth={1.5} />
+                                <User className="w-4 h-4 text-fm-text-secondary" strokeWidth={1.5} />
                             </div>
                         )}
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-200 truncate">
+                            <p className="text-sm font-medium text-fm-text-primary truncate">
                                 {user?.user_metadata?.full_name || 'Farmer'}
                             </p>
-                            <p className="text-[12px] text-[#9CA3AF] truncate">{user?.email || 'user@example.com'}</p>
+                            <p className="text-[12px] text-fm-text-secondary truncate">{user?.email || 'user@example.com'}</p>
                         </div>
                     </div>
 
@@ -131,7 +131,7 @@ export default function Sidebar() {
                         <NavLink
                             to="/profile"
                             className={({ isActive }) => `block w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                                isActive ? 'bg-farm-accent/10 text-fm-accent' : 'text-[#9CA3AF] hover:text-gray-200 hover:bg-white/5'
+                                isActive ? 'bg-farm-accent/10 text-fm-accent' : 'text-fm-text-secondary hover:text-fm-text-primary hover:bg-black/5'
                             }`}
                         >
                             <User className="w-[16px] h-[16px]" strokeWidth={1.5} />
@@ -139,7 +139,7 @@ export default function Sidebar() {
                         </NavLink>
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#9CA3AF] hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
+                            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-fm-text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
                         >
                             <LogOut className="w-[16px] h-[16px]" strokeWidth={1.5} />
                             <span>Sign Out</span>
