@@ -125,7 +125,6 @@ export default function DiseaseAlerts() {
         }
     };
 
-<<<<<<< Updated upstream
     // Filter alerts by timeline date range
     const filteredAlerts = diseaseAlerts.filter((alert) => {
         if (!dateRange.startDate || !dateRange.endDate) return true;
@@ -134,12 +133,8 @@ export default function DiseaseAlerts() {
         return alertDate >= dateRange.startDate && alertDate <= dateRange.endDate;
     });
 
-    const inputClass = "w-full px-4 py-3 bg-farm-bg border border-farm-border rounded-lg text-farm-text font-dm text-sm input-animated";
-    const labelClass = "text-xs text-farm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
-=======
-    const inputClass = "w-full px-4 py-3 bg-fm-bg-base border border-fm-border rounded-lg text-fm-text-primary font-dm text-sm input-animated";
+    const inputClass = "w-full px-4 py-3 bg-fm-bg-base border border-fm-border-default rounded-lg text-fm-text-primary font-dm text-sm input-animated";
     const labelClass = "text-xs text-fm-text-muted uppercase tracking-wider font-mono mb-1.5 block";
->>>>>>> Stashed changes
 
     return (
         <PageWrapper>
@@ -151,27 +146,19 @@ export default function DiseaseAlerts() {
                             Disease<br /><span className="text-fm-stat-crops">Alerts</span>
                         </h1>
                     </div>
-<<<<<<< Updated upstream
                     <div className="flex items-center gap-3">
                         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                             onClick={() => setShowRadiusSettings(true)}
-                            className="flex items-center gap-2 px-4 py-3 bg-farm-card border border-farm-border text-farm-text-secondary font-syne font-bold rounded-lg hover:border-farm-accent transition-colors">
+                            className="flex items-center gap-2 px-4 py-3 bg-fm-bg-elevated border border-fm-border-default text-fm-text-secondary font-syne font-bold rounded-lg hover:border-fm-accent transition-colors">
                             <Settings className="w-4 h-4" />
                             <span className="hidden sm:inline">Alert Radius</span>
                         </motion.button>
                         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                             onClick={() => setShowForm(true)}
-                            className="flex items-center gap-2 px-6 py-3 bg-farm-warning text-farm-bg font-syne font-bold rounded-lg">
+                            className="flex items-center gap-2 px-6 py-3 bg-fm-stat-crops text-fm-bg-base font-syne font-bold rounded-lg">
                             <Plus className="w-5 h-5" />Report Disease
                         </motion.button>
                     </div>
-=======
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowForm(true)}
-                        className="flex items-center gap-2 px-6 py-3 bg-fm-stat-crops text-fm-bg-base font-syne font-bold rounded-lg">
-                        <Plus className="w-5 h-5" />Report Disease
-                    </motion.button>
->>>>>>> Stashed changes
                 </motion.div>
 
                 {/* Filters */}
@@ -208,16 +195,11 @@ export default function DiseaseAlerts() {
                 )}
 
                 {/* Alert Count */}
-<<<<<<< Updated upstream
-                <motion.div variants={staggerItem} className="text-sm text-farm-text-muted font-mono">
+                <motion.div variants={staggerItem} className="text-sm text-fm-text-muted font-mono">
                     {filteredAlerts.length} alert{filteredAlerts.length !== 1 ? 's' : ''} shown
                     {filteredAlerts.length !== diseaseAlerts.length && (
-                        <span className="text-farm-text-secondary"> (of {diseaseAlerts.length} total)</span>
+                        <span className="text-fm-text-secondary"> (of {diseaseAlerts.length} total)</span>
                     )}
-=======
-                <motion.div variants={staggerItem} className="text-sm text-fm-text-muted font-mono">
-                    {diseaseAlerts.length} alert{diseaseAlerts.length !== 1 ? 's' : ''} reported
->>>>>>> Stashed changes
                 </motion.div>
 
                 {/* Selected Alert Detail */}
