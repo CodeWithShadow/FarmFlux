@@ -25,7 +25,7 @@ export default function ListingCard({ listing, index = 0, onBuyClick, isOwner })
                     </div>
                 )}
                 {listing.is_surplus && (
-                    <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] uppercase tracking-wider bg-farm-warm/90 text-fm-bg-base rounded font-bold">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] uppercase tracking-wider bg-farm-warm/90 text-fm-text-primary rounded font-bold">
                         Surplus
                     </span>
                 )}
@@ -33,7 +33,7 @@ export default function ListingCard({ listing, index = 0, onBuyClick, isOwner })
                     <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 text-[10px] bg-farm-accent/90 text-fm-bg-base rounded font-mono"
+                        className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 text-[10px] bg-farm-accent/90 text-fm-text-primary rounded font-mono"
                     >
                         <Sparkles className="w-3 h-3" />
                         AI Price

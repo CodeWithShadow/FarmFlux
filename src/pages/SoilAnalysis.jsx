@@ -89,7 +89,7 @@ export default function SoilAnalysis() {
                             whileTap={{ scale: 0.98 }}
                             onClick={handleAnalyze}
                             disabled={loading}
-                            className="w-full py-4 bg-fm-stat-crops text-fm-bg-base font-syne font-bold text-lg rounded-lg disabled:opacity-50"
+                            className="w-full py-4 bg-fm-stat-crops text-fm-text-primary font-syne font-bold text-lg rounded-lg disabled:opacity-50"
                         >
                             {loading ? <LoadingSpinner text={progressText || "Classifying soil..."} size="sm" /> : 'Analyze Soil'}
                         </motion.button>

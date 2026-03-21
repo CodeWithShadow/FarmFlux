@@ -155,7 +155,7 @@ export default function DiseaseAlerts() {
                         </motion.button>
                         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                             onClick={() => setShowForm(true)}
-                            className="flex items-center gap-2 px-6 py-3 bg-fm-stat-crops text-fm-bg-base font-syne font-bold rounded-lg">
+                            className="flex items-center gap-2 px-6 py-3 bg-fm-stat-crops text-fm-text-primary font-syne font-bold rounded-lg">
                             <Plus className="w-5 h-5" />Report Disease
                         </motion.button>
                     </div>
@@ -217,7 +217,7 @@ export default function DiseaseAlerts() {
                                             <button 
                                                 onClick={handleDeleteAlert} 
                                                 disabled={deleting}
-                                                className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-fm-stat-disease hover:bg-fm-stat-disease hover:text-fm-bg-base transition-colors disabled:opacity-50"
+                                                className="text-xs px-2 py-0.5 rounded bg-farm-danger/10 text-fm-stat-disease hover:bg-fm-stat-disease hover:text-fm-text-primary transition-colors disabled:opacity-50"
                                             >
                                                 {deleting ? 'Deleting...' : 'Delete'}
                                             </button>
@@ -276,7 +276,7 @@ export default function DiseaseAlerts() {
                                         <textarea value={form.description} onChange={(e) => handleChange('description', e.target.value)} rows={3} className={inputClass} />
                                     </div>
                                     <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={submitting}
-                                        className="w-full py-3 bg-fm-stat-crops text-fm-bg-base font-syne font-bold rounded-lg disabled:opacity-50">
+                                        className="w-full py-3 bg-fm-stat-crops text-fm-text-primary font-syne font-bold rounded-lg disabled:opacity-50">
                                         {submitting ? 'Reporting...' : 'Submit Report'}
                                     </motion.button>
                                 </form>

@@ -86,7 +86,7 @@ export default function ImageUploader({ onImageSelect, accept = 'image/*' }) {
                                 onClick={handleCameraCapture}
                                 className="w-16 h-16 rounded-full bg-fm-accent flex items-center justify-center shadow-lg shadow-farm-accent/30"
                             >
-                                <Camera className="w-7 h-7 text-fm-bg-base" />
+                                <Camera className="w-7 h-7 text-fm-text-primary" />
                             </motion.button>
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
