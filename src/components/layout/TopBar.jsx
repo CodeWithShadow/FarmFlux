@@ -45,7 +45,7 @@ export default function TopBar() {
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="sticky top-0 z-40 h-16 flex items-center justify-between px-4 md:px-8 bg-fm-bg-surface/80 backdrop-blur-xl border-b border-fm-border"
+            className={`sticky top-0 z-40 h-16 flex items-center justify-between px-4 md:px-8 ${isDarkMode ? 'bg-[#201E19]/80' : 'bg-white/80'} backdrop-blur-xl border-b border-fm-border`}
         >
             <div className="flex items-center gap-4">
                 <motion.button
@@ -114,11 +114,11 @@ export default function TopBar() {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute right-0 mt-2 w-80 bg-fm-bg-surface/95 backdrop-blur-xl border border-fm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col"
+                                className={`absolute right-0 mt-2 w-80 ${isDarkMode ? 'bg-[#1A1814]/85' : 'bg-white/85'} backdrop-blur-2xl border border-fm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col`}
                             >
-                                <div className="px-4 py-3 border-b border-fm-border flex items-center justify-between bg-fm-bg-elevated/50">
+                                <div className={`px-4 py-3 border-b border-fm-border flex items-center justify-between ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}>
                                     <h3 className="font-syne font-bold text-fm-text-primary">Notifications</h3>
-                                    {unreadCount > 0 && <span className="text-xs bg-fm-accent/20 text-fm-accent px-2 py-0.5 rounded-full font-mono">{unreadCount} new</span>}
+                                    {unreadCount > 0 && <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${isDarkMode ? 'bg-[#C27A3A]/20 text-fm-accent' : 'bg-[#22623A]/10 text-fm-accent'}`}>{unreadCount} new</span>}
                                 </div>
                                 <div className="max-h-[70vh] overflow-y-auto no-scrollbar">
                                     {notifications.length === 0 ? (
@@ -127,7 +127,7 @@ export default function TopBar() {
                                         </div>
                                     ) : (
                                         notifications.map((notif) => (
-                                            <div key={notif.id} className={`p-4 border-b border-fm-border/50 hover:bg-fm-bg-elevated/50 transition-colors flex gap-3 ${!notif.read ? 'bg-fm-accent/5' : ''}`}>
+                                            <div key={notif.id} className={`p-4 border-b border-fm-border/50 transition-colors flex gap-3 ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-black/5'} ${!notif.read ? (isDarkMode ? 'bg-[#C27A3A]/10' : 'bg-[#22623A]/5') : ''}`}>
                                                 <div className="flex-shrink-0 mt-0.5">
                                                     {getIcon(notif.type)}
                                                 </div>
@@ -146,7 +146,7 @@ export default function TopBar() {
                                 {/* Alert Radius Settings Link */}
                                 <button
                                     onClick={() => { setShowNotifs(false); setShowRadiusSettings(true); }}
-                                    className="w-full flex items-center gap-2.5 px-4 py-3 border-t border-fm-border text-sm text-fm-text-secondary hover:bg-fm-bg-elevated/50 hover:text-fm-accent transition-colors font-dm"
+                                    className={`w-full flex items-center gap-2.5 px-4 py-3 border-t border-fm-border text-sm text-fm-text-secondary ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-black/5'} hover:text-fm-accent transition-colors font-dm`}
                                 >
                                     <Shield className="w-4 h-4" />
                                     Alert Radius Settings
