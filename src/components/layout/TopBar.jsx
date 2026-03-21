@@ -114,7 +114,7 @@ export default function TopBar() {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
-                                className={`absolute right-0 mt-2 w-80 ${isDarkMode ? 'bg-[#1A1814]/85' : 'bg-white/85'} backdrop-blur-2xl border border-fm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col`}
+                                className={`absolute right-0 mt-2 w-80 ${isDarkMode ? 'bg-[#1A1814]/40' : 'bg-white/40'} backdrop-blur-3xl border border-fm-border rounded-xl shadow-2xl overflow-hidden z-50 flex flex-col`}
                             >
                                 <div className={`px-4 py-3 border-b border-fm-border flex items-center justify-between ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}>
                                     <h3 className="font-syne font-bold text-fm-text-primary">Notifications</h3>
